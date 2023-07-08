@@ -1,9 +1,10 @@
+using API;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.Configure<GRPCServices>(builder.Configuration.GetSection("GRPCServices"));
 // Add services to the container.
-
 builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

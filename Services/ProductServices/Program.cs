@@ -21,8 +21,7 @@ using Serilog;
     builder.Services.AddCodeFirstGrpc();
     builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 
-    var app = builder.Build();
-    //app.UseSerilogRequestLogging();
+    var app = builder.Build();    
     app.MapGrpcService<CategoryService>();
     app.MapGet("/", () => "Product services");
     app.Run();

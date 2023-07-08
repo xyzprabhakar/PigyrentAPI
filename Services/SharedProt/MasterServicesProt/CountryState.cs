@@ -105,7 +105,7 @@ namespace MasterServicesProt
         [OperationContract]
         Task<ReturnList<CountryTopCity>> GetTopCities(RequestData request, CallContext context = default);
         [OperationContract]
-        Task<ReturnList<Currency>> GetCountryCurrency(RequestData request, CallContext context = default);                
+        Task<ReturnList<string>> GetCountryCurrency(RequestData request, CallContext context = default);                
         [OperationContract]
         Task<ReturnList<State>> GetAllState( CallContext context = default);
         [OperationContract]

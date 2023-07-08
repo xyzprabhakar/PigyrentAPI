@@ -15,6 +15,7 @@
     </PackageReference>
     <PackageReference Include="protobuf-net.Grpc" Version="1.1.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <ProjectReference Include="..\Services\SharedProt\MasterServicesProt\MasterServicesProt.csproj" />
     <ProjectReference Include="..\Services\SharedProt\ProductServicesProt\ProductServicesProt.csproj" />
   </ItemGroup>
 

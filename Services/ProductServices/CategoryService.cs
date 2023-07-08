@@ -102,7 +102,7 @@ namespace ProductServices
             ReturnData returnData = new ReturnData() {Status= ReturnStatus.Error, Message="" };
             try
             {
-                throw new Exception("test error");
+                
                 bool isUpdate = true;
                 string categoryId = request.CategoryId;
                 if (string.IsNullOrEmpty(categoryId))

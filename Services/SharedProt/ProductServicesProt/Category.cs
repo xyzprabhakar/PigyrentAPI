@@ -64,7 +64,7 @@ namespace ProductServicesProt
     [DataContract]
     public class CategoryRequest
     {
-        [DataMember(Order = 1)]
+        [DataMember(Order = 1)]        
         public string? CategoryId { get; set; }        
         [DataMember(Order = 2)]
         public string? CategoryName { get; set; }

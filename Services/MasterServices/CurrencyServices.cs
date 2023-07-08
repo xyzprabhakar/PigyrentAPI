@@ -13,13 +13,15 @@ namespace MasterServices
     {
         private readonly IMongoCollection<tblCurrency> _currency;
         private readonly IMapper _mapper;
-        
-        public CurrencyServices(IOptions<DbSetting> dbSetting, IMapper mapper)
+        private readonly ILogger<CurrencyServices> _logger;
+
+        public CurrencyServices(IOptions<DbSetting> dbSetting, IMapper mapper, ILogger<CurrencyServices> logger)
         {
             var mongoClient = new MongoClient(dbSetting.Value.ConnectionString);
             var mongoDatabase = mongoClient.GetDatabase(dbSetting.Value.DatabaseName);
             _currency = mongoDatabase.GetCollection<tblCurrency>(dbSetting.Value.CurrencyCollection);
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<ReturnList<Currency>> GetAll(CallContext context = default)
@@ -77,6 +79,7 @@ namespace MasterServices
             catch (Exception ex) 
             {
                 returnData.Message = ex.Message;
+                _logger.LogError(ex, "Error: CurrencyServices.Save() " + ex.Message);
             }
             return returnData;
         }
