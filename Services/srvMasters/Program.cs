@@ -1,6 +1,19 @@
+using AutoMapper;
+using Serilog;
+using srvMasters;
+using srvMasters.DB;
 using srvMasters.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.Configure<DbSetting>(
+    builder.Configuration.GetSection("DbSetting"));
+
+var mapperConfig = new MapperConfiguration(mc =>
+{
+    mc.AddProfile(new MappingProfile());
+});
+IMapper mapper = mapperConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
 
 // Additional configuration is required to successfully run gRPC on macOS.
 // For instructions on how to configure Kestrel and gRPC clients on macOS, visit https://go.microsoft.com/fwlink/?linkid=2099682
@@ -8,6 +21,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddGrpc();
 builder.Services.AddGrpcReflection();
+builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 
 var app = builder.Build();
 IWebHostEnvironment env = app.Environment;
@@ -20,6 +34,6 @@ if (env.IsDevelopment())
 app.MapGrpcService<GreeterService>();
 app.MapGrpcService<CurrencyService>();
 
-app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
+app.MapGet("/", () => "Master services");
 
 app.Run();

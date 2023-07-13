@@ -1,6 +1,6 @@
 syntax = "proto3";
 import "google/protobuf/any.proto";
-
+import "google/protobuf/timestamp.proto";
 option csharp_namespace = "srvMasters.protos";
 
 package currency;
@@ -9,7 +9,8 @@ package currency;
 // The greeting service definition.
 service ICurrency {
   // Sends a greeting
-  rpc GetCurrency(mdlCurrencyRequest) returns (mdlReturnList);
+  rpc GetCurrency(mdlCurrencyRequest) returns (mdlCurrencyList);
+  rpc SaveCurrency(mdlCurrency) returns (mdlCurrencySaveResponse);
 }
 
 // The request message containing the user's name.
@@ -19,6 +20,11 @@ message mdlCurrency {
   string name =3;
   string symbol=4;
   string modifiedBy=5;  
+  google.protobuf.Timestamp modifiedDt = 6;
+}
+message mdlCurrencyList
+{
+	repeated mdlCurrency currency=1;
 }
 
 message mdlCurrencyRequest
@@ -26,33 +32,13 @@ message mdlCurrencyRequest
 	string currencyId = 1;
 	string code=2;
 	bool allData=3;
-} 
-
-
-
-// The request message containing the user's name.
-message mdlRequestData {
-  string requestId= 1;
 }
 
-// The response message containing the greetings.
-message mdlReturnData {  
-    enmReturnStatus status=1;
-    string messages=2;
-	google.protobuf.Any dataObject = 3;
-     
+message mdlCurrencySaveResponse
+{
+	bool status=1;
+	string message=2;
+	string currencyId =3;
+	
 }
 
-message mdlReturnList{  
-    enmReturnStatus status=1;
-    string messages=2;
-	google.protobuf.Any dataObject = 3;     
-}
-
-enum enmReturnStatus{
-	None=0;
-    Success=1;
-    Error=2;
-    Warning=3;
-    Info=4;
-}
