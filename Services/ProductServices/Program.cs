@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Builder;
 using ProductServices;
 using ProductServices.DB;
 using ProductServicesProt;
@@ -20,9 +21,16 @@ using Serilog;
 
     builder.Services.AddCodeFirstGrpc();
     builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
+    //add grpc reflection
+    //builder.Services.AddGrpcReflection();
+    var app = builder.Build();
 
-    var app = builder.Build();    
     app.MapGrpcService<CategoryService>();
     app.MapGet("/", () => "Product services");
+    //IWebHostEnvironment env = app.Environment;
+    //if (env.IsDevelopment())
+    //{
+    //    app.MapGrpcReflectionService();
+    //}
     app.Run();
 

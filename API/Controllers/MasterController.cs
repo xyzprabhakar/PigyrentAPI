@@ -1,4 +1,5 @@
-﻿using DTO;
+﻿using API.Models;
+using DTO;
 using Grpc.Net.Client;
 using MasterServicesProt;
 using Microsoft.AspNetCore.Http;
@@ -16,32 +17,102 @@ namespace API.Controllers
     {
         private readonly ILogger<MasterController> _logger;
         private readonly IOptions<GRPCServices> _grpcServices;
-
-        public MasterController(IOptions<GRPCServices> grpcServices, ILogger<MasterController> logger)
+        private readonly IOptions<ApiBehaviorOptions> _apiBehaviorOptions;
+        public MasterController(IOptions<GRPCServices> grpcServices, ILogger<MasterController> logger, IOptions<ApiBehaviorOptions> apiBehaviorOptions)
         {
             _logger = logger;
-            _grpcServices= grpcServices;
+            _grpcServices = grpcServices;
+            _apiBehaviorOptions = apiBehaviorOptions;
         }
 
         [HttpGet]
         [Route(nameof(GetAllCurrency))]
-        public async Task<ReturnList<Currency>> GetAllCurrency([FromQuery]string currencyId, [FromQuery] string codeId, [FromQuery] string allData)
+        public async Task<IActionResult> GetAllCurrency([FromQuery] string? currencyId, [FromQuery] string? code, [FromQuery] bool allData)
         {
-            using var channel = GrpcChannel.ForAddress(_grpcServices.Value.MasterServices);
-            var client = channel.CreateGrpcService<ICurrencyService>();
-            if (!string.IsNullOrEmpty(currencyId))
+            ReturnList<mdlCurrency> returnList = new() { ReturnData=new ()};
+            bool loadById=false;
+            RequestData requestData = new RequestData() { RequestId=string.Empty};
+            try
             {
-                if (currencyId.Length != 24) 
+                using var channel = GrpcChannel.ForAddress(_grpcServices.Value.MasterServices);
+                var client = channel.CreateGrpcService<ICurrencyService>();
+
+                if (!string.IsNullOrEmpty(currencyId) && currencyId.Length != _grpcServices.Value.IdLength)
                 {
-                    //throw new HttpException(400, "Bad Request");
-                    //ModelState.AddModelError(string.Empty,"Id should be 24 char long");
-                    //retur
+                    ModelState.AddModelError(nameof(currencyId), enmErrorMessage.IdentifierLength.ToString());
+                    requestData.RequestId = currencyId;
+                    loadById = true;
+                }
+
+                if (ModelState.IsValid)
+                {
+                    if (loadById)
+                    {
+                        var tempData = await client.GetById(requestData);
+                        if (tempData != null)
+                        {
+                            returnList.ReturnData.Add(tempData);
+                        }
+                    }
+                    else if (!string.IsNullOrWhiteSpace(code))
+                    {
+                        requestData.RequestId = code;
+                        var tempData = await client.GetByCode(requestData);
+                        if (tempData != null)
+                        {
+                            returnList.ReturnData.Add(tempData);
+                        }
+                    }
+                    else if (allData)
+                    {
+                        
+                        returnList =await client.GetAll()??new ReturnList<mdlCurrency>();
+                    }
+
+                }
+                else
+                {
+                    return _apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
                 }
             }
-            //if(allData)
-            //var reply = await client.GetAll();
-            //return reply;
-            throw new NotImplementedException();
+            catch (Exception ex)
+            {   
+                _logger.LogError(ex, "Error: MasterController.GetAllCurrency() " + ex.Message);
+            }
+            return Ok( returnList);
+        }
+
+        [HttpPost]
+        [Route(nameof(SaveCurrency))]
+        public async Task<IActionResult> SaveCurrency([FromBody] mdlCurrency request)
+        {
+            RequestData requestData = new RequestData() { RequestId = "Hi"};
+            ReturnData returnData = new();
+            try
+            {
+                //if (string.IsNullOrWhiteSpace(request.CurrencyCode))
+                //{
+                //    ModelState.AddModelError(nameof(mdlCurrency.CurrencyCode), enmErrorMessage.IdentifierRequired.ToString());
+                //}
+                if (ModelState.IsValid)
+                {
+                    using var channel = GrpcChannel.ForAddress(_grpcServices.Value.ProductServices);
+                    var client = channel.CreateGrpcService<ICurrencyService>();
+                    var temp = await client.GetAll();
+                    //var tempData=await client.GetById1(requestData);
+                    returnData = await client.SaveCurrency(requestData);
+                }
+                else
+                {
+                    return _apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+                }
+            }
+            catch (Exception ex)
+            {
+                returnData.Message = ex.Message;
+                _logger.LogError(ex, "Error: MasterController.SaveCurrency() " + ex.Message);
+            }
+            return Ok(returnData);
         }
     }
 }

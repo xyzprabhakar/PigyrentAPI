@@ -4,6 +4,7 @@ using MasterServices.DB;
 using ProtoBuf.Grpc.Server;
 using Serilog;
 
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<DbSetting>(
     builder.Configuration.GetSection("DbSetting"));
@@ -17,8 +18,18 @@ builder.Services.AddSingleton(mapper);
 
 builder.Services.AddCodeFirstGrpc();
 builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
+//add grpc reflection
+builder.Services.AddGrpcReflection();
+
 var app = builder.Build();
+app.MapGrpcService<CurrencyServices>();
+//app.MapGrpcService<CountryStateServices>();
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", () => "Master Services");
+IWebHostEnvironment env = app.Environment;
 
+if (env.IsDevelopment())
+{
+    app.MapGrpcReflectionService();
+}
 app.Run();

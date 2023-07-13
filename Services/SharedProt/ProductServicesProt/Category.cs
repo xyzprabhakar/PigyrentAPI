@@ -7,12 +7,7 @@ using System.ServiceModel;
 
 namespace ProductServicesProt
 {
-    [DataContract]
-    public class Categories
-    {
-        [DataMember(Order = 1)]
-        public List<Category> Category { get; set; }
-    }
+    
 
     [DataContract]
     public class Category

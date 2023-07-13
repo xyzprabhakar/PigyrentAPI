@@ -106,7 +106,7 @@ namespace MasterServices
             catch (Exception ex)
             {
                 returnData.Message = ex.Message;
-                _logger.LogError(ex, "Error: CategoryService.Save() " + ex.Message);
+                _logger.LogError(ex, "Error: CountryStateServices.SaveCountry() " + ex.Message);
             }
             return returnData;
 
@@ -149,7 +149,7 @@ namespace MasterServices
             catch (Exception ex)
             {
                 returnData.Message = ex.Message;
-                _logger.LogError(ex, "Error: CategoryService.Save() " + ex.Message);
+                _logger.LogError(ex, "Error: CountryStateServices.SaveState() " + ex.Message);
             }
             return returnData;
 

@@ -15,13 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductServices", "Services
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DTO", "Services\SharedProt\DTO\DTO.csproj", "{AC1DAF5F-E848-41E5-9280-14D9C411517A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PigyRent", "PigyRent\PigyRent.csproj", "{914D5228-7A09-415F-A5EB-E240DC14673B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRM", "CRM\CRM.csproj", "{94798E91-09D5-4CB9-AD2E-84A02BE934BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterServicesProt", "Services\SharedProt\MasterServicesProt\MasterServicesProt.csproj", "{2C35658B-592C-4C69-82ED-BF2795BDE3C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MasterServicesProt", "Services\SharedProt\MasterServicesProt\MasterServicesProt.csproj", "{2C35658B-592C-4C69-82ED-BF2795BDE3C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterServices", "Services\MasterServices\MasterServices.csproj", "{1CE740DD-D569-4B93-AD09-023CB2E692B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MasterServices", "Services\MasterServices\MasterServices.csproj", "{1CE740DD-D569-4B93-AD09-023CB2E692B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,10 +43,6 @@ Global
 		{AC1DAF5F-E848-41E5-9280-14D9C411517A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC1DAF5F-E848-41E5-9280-14D9C411517A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC1DAF5F-E848-41E5-9280-14D9C411517A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{914D5228-7A09-415F-A5EB-E240DC14673B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{914D5228-7A09-415F-A5EB-E240DC14673B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{914D5228-7A09-415F-A5EB-E240DC14673B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{914D5228-7A09-415F-A5EB-E240DC14673B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{94798E91-09D5-4CB9-AD2E-84A02BE934BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{94798E91-09D5-4CB9-AD2E-84A02BE934BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94798E91-09D5-4CB9-AD2E-84A02BE934BD}.Release|Any CPU.ActiveCfg = Release|Any CPU

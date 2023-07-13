@@ -18,7 +18,7 @@ namespace DTO
         [DataMember(Order = 2)]
         public string? Message { get; set; }
         [DataMember(Order = 3)]
-        public string? ReturnId { get; set; }
+        public string? ReturnId { get; set; } = null;
     }
     [DataContract]
     public class ReturnList<T>

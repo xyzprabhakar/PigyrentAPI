@@ -7,6 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Logs\**" />
+    <Content Remove="Logs\**" />
+    <EmbeddedResource Remove="Logs\**" />
+    <None Remove="Logs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.55.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.20.0" />
     <PackageReference Include="protobuf-net.Grpc.AspNetCore" Version="1.1.1" />
   </ItemGroup>

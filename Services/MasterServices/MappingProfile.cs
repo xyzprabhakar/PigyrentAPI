@@ -10,7 +10,7 @@ namespace MasterServices
         {
             CreateMap<State, tblState>();
             CreateMap<Country, tblCountry>();
-            CreateMap<Currency, tblCurrency>();
+            CreateMap<mdlCurrency, tblCurrency>();
         }
     }
 }

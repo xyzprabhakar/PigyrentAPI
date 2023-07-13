@@ -5,7 +5,8 @@ using ProtoBuf.Grpc.Client;
 using ProductServicesProt;
 using DTO;
 using Microsoft.Extensions.Options;
-using System.Net.Mail;
+using API.Models;
+using System.ServiceModel.Channels;
 
 namespace API.Controllers
 {
@@ -16,23 +17,24 @@ namespace API.Controllers
         
         private readonly ILogger<ProductController> _logger;
         private readonly IOptions<GRPCServices> _grpcServices;
+        private readonly IOptions<ApiBehaviorOptions> _apiBehaviorOptions;
 
-        public ProductController(IOptions<GRPCServices> grpcServices, ILogger<ProductController> logger)
+        public ProductController(IOptions<GRPCServices> grpcServices, ILogger<ProductController> logger, IOptions<ApiBehaviorOptions> apiBehaviorOptions)
         {
             _grpcServices = grpcServices;
             _logger = logger;
+            _apiBehaviorOptions = apiBehaviorOptions;
         }
 
         
         [HttpGet]
-        [Route("GetCategory")]
-        public async Task<IActionResult> GetCategory([FromQuery] CategoryRequest categoryRequest,
-             [FromServices] IOptions<ApiBehaviorOptions> apiBehaviorOptions)
+        [Route("GetCategory")]        
+        public async Task<IActionResult> GetCategory([FromQuery] CategoryRequest categoryRequest)
         {
             ReturnList <Category> returnList = new ();
             if (!string.IsNullOrEmpty(categoryRequest.CategoryId) && categoryRequest.CategoryId.Length!=24)
             {
-                ModelState.AddModelError(nameof(CategoryRequest.CategoryId),"At least 24 char");
+                ModelState.AddModelError(nameof(CategoryRequest.CategoryId), enmErrorMessage.IdentifierLength.ToString());
             }
             if (ModelState.IsValid)
             {
@@ -42,7 +44,7 @@ namespace API.Controllers
             }
             else
             {
-                return apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+                return _apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
             }
             return Ok( returnList);
 
@@ -50,13 +52,33 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("SaveCategory")]
-        public async Task<ReturnData> SaveCategory([FromBody] Category request)
+        public async Task<IActionResult> SaveCategory([FromBody] Category request)
         {
-
-            using var channel = GrpcChannel.ForAddress(_grpcServices.Value.ProductServices);
-            var client = channel.CreateGrpcService<ICategoryService>();
-            var reply = await client.Save(request);
-            return reply;
+            ReturnData returnData = new ();
+            try
+            {
+                if (string.IsNullOrWhiteSpace(request.Name))
+                {
+                    ModelState.AddModelError(nameof(Category.Name), enmErrorMessage.IdentifierRequired.ToString());
+                }
+                if (ModelState.IsValid)
+                {
+                    using var channel = GrpcChannel.ForAddress(_grpcServices.Value.ProductServices);
+                    var client = channel.CreateGrpcService<ICategoryService>();
+                    returnData = await client.Save(request);
+                }
+                else
+                {
+                    return _apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+                }
+            }
+            catch (Exception ex)
+            {
+                returnData.Message = ex.Message;
+                _logger.LogError(ex, "Error: ProductController.SaveCategory() " + ex.Message);
+            }
+            return Ok(returnData);
+            
         }
     }
 }
