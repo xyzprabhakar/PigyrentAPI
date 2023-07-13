@@ -1,9 +1,9 @@
 syntax = "proto3";
 import "google/protobuf/any.proto";
 
-option csharp_namespace = "srvMasters.Currency";
+option csharp_namespace = "srvMasters.protos";
 
-package pigyrent;
+package currency;
 
 
 // The greeting service definition.
@@ -46,7 +46,7 @@ message mdlReturnData {
 message mdlReturnList{  
     enmReturnStatus status=1;
     string messages=2;
-	repeated google.protobuf.Any dataObject = 3;     
+	google.protobuf.Any dataObject = 3;     
 }
 
 enum enmReturnStatus{
