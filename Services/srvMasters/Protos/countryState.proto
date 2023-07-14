@@ -1,0 +1,86 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+import "common.proto";
+
+option csharp_namespace = "srvMasters.protos";
+
+package countryState;
+
+// The greeting service definition.
+service ICountryState {
+  // Sends a greeting
+  rpc GetCountry (mdlGetCountry) returns (mdlCountryList);
+  rpc GetState (mdlGetState) returns (mdlStateList);
+  rpc SaveState (mdlState) returns (mdl);
+}
+
+message mdlCountryList{
+ repeated mdlCountry country=1;
+} 
+message mdlStateList{
+ repeated mdlState state=1;
+} 
+
+// The request message containing the user's name.
+message mdlCountry {
+  string countryId= 1;
+  string code= 2;
+  string name= 3;
+  string phoneCode= 4;
+  string capital= 5;
+  bool isActive=6;
+  repeated mdlCountryTopCity cities =7;
+  repeated string currency=8;
+  repeated string languages=9;
+  repeated mdlCountryTimeZone timeZones=10;
+  string modifiedBy=11;
+  google.protobuf.Timestamp modifiedDt = 12;
+}
+
+message mdlCountryTopCity {
+	string cityName=1;
+	string stateId=2;
+	string productCount=3;
+}
+
+message mdlCountryTimeZone{
+	string zoneName=1;
+	string offset=2;
+	string offsetName=3;
+	string abbreviation=4;
+	string tzName=5;	
+}
+
+message mdlState {
+  string stateId = 1;
+  string code = 2;
+  string name = 3;
+  string countryId = 4;
+  string latitude= 5;
+  string longitude= 6;
+  repeated mdlCity cities=7;
+}
+
+message  mdlCity{
+	string cityName=1;
+	int productCount=2;
+	string latitude=3;
+	string Longitude=4; 
+}
+
+message mdlGetState
+{
+	string stateId=1;
+	string countryId=2;
+	bool onlyActive=3;
+	bool allData=4;
+}
+message mdlGetCountry
+{
+	string countryId=1;
+	string countryCode=1;
+	bool onlyActive=3;
+	bool allData=4;
+}
+
+

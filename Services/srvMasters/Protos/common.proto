@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option csharp_namespace = "srvMasters.Protos";
+
+package common;
+
+message mdlSaveResponse
+{
+	bool status=1;
+	string message=2;
+	string messageId =3;	
+}
