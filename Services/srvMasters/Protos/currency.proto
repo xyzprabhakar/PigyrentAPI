@@ -1,6 +1,7 @@
 syntax = "proto3";
 import "google/protobuf/any.proto";
 import "google/protobuf/timestamp.proto";
+import "protos/common.proto";
 option csharp_namespace = "srvMasters.protos";
 
 package currency;
@@ -10,7 +11,7 @@ package currency;
 service ICurrency {
   // Sends a greeting
   rpc GetCurrency(mdlCurrencyRequest) returns (mdlCurrencyList);
-  rpc SaveCurrency(mdlCurrency) returns (mdlCurrencySaveResponse);
+  rpc SaveCurrency(mdlCurrency) returns (common.mdlSaveResponse);
 }
 
 // The request message containing the user's name.
@@ -34,13 +35,7 @@ message mdlCurrencyRequest
 	bool allData=3;
 }
 
-message mdlCurrencySaveResponse
-{
-	bool status=1;
-	string message=2;
-	string currencyId =3;
-	
-}
+
 
 
 

@@ -25,8 +25,7 @@ namespace srvMasters.Services
             _logger = logger;
         }
         public override Task<mdlCurrencyList> GetCurrency(mdlCurrencyRequest request, ServerCallContext context)
-        {
-            
+        {            
             mdlCurrencyList returnList = new mdlCurrencyList() { Currency = { } };
             try
             {
@@ -58,9 +57,9 @@ namespace srvMasters.Services
 
         }
 
-        public override Task<mdlCurrencySaveResponse> SaveCurrency(mdlCurrency request, ServerCallContext context)
-        {   
-            mdlCurrencySaveResponse returnData = new mdlCurrencySaveResponse() ;
+        public override Task<mdlSaveResponse> SaveCurrency(mdlCurrency request, ServerCallContext context)
+        {
+            mdlSaveResponse returnData = new mdlSaveResponse() ;
             try
             {
                 bool isUpdate = true;
@@ -82,7 +81,7 @@ namespace srvMasters.Services
                     model.CreatedBy = model.ModifiedBy;
                     _currency.InsertOne(model);
                     returnData.Message = $"Inserted successfully";
-                    returnData.CurrencyId = model.CurrencyId!;
+                    returnData.MessageId = model.CurrencyId!;
                 }
                 else
                 {

@@ -1,8 +1,8 @@
 using AutoMapper;
 using Serilog;
-using srvMasters;
-using srvMasters.DB;
-using srvMasters.Services;
+using srvProduct;
+using srvProduct.DB;
+using srvProduct.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<DbSetting>(
@@ -31,9 +31,7 @@ if (env.IsDevelopment())
 }
 
 // Configure the HTTP request pipeline.
-app.MapGrpcService<CountryStateService>();
-app.MapGrpcService<CurrencyService>();
-
-app.MapGet("/", () => "Master services");
+app.MapGrpcService<CategoryService>();
+app.MapGet("/", () => "Product Services");
 
 app.Run();

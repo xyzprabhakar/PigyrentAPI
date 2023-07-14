@@ -1,0 +1,68 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "protos/common.proto";
+option csharp_namespace = "srvProduct.protos";
+
+package category;
+
+
+service ICategoryService {  
+  rpc SaveCategory(mdlCategory) returns (common.mdlSaveResponse);
+  rpc GetCategory(mdlCategoryRequest) returns (mdlCategoryList );
+}
+
+message mdlCategoryList {
+    repeated mdlCategory category=1;
+}
+
+// The request message containing the user's name.
+message mdlCategory {
+  string categoryId = 1;
+  bool isActive=2;
+  string parentCategoryId = 3;
+  string rootCategoryId = 4;
+  string title = 5;
+  string name = 6;
+  google.protobuf.StringValue shortDesc = 7;
+  repeated string keywords = 8;
+  repeated mdlcategoryProperty categoryProperties= 9;
+  string modifiedBy=10;
+  google.protobuf.Timestamp modifiedDt = 11;
+}
+message mdlcategoryProperty{
+	int32 PropertyDisplayOrder=1;
+	string name = 2;
+	enmPropertyType type = 3;
+	int32 minLength = 4;
+	int32 maxLength = 5;	
+	string regx = 6;
+    repeated string option=7;
+}
+
+    enum enmPropertyType
+    {
+        Label=0;
+        Text=1;
+        Number=2;
+        Date=3;
+        DateTime=4;
+        Select=5;
+        SelectMultiple=6;
+        Checkbox = 7;
+        RadioButtion = 8;
+    }
+
+
+// The response message containing the greetings.
+message mdlCategoryRequest {
+  string categoryId= 1;
+  string categoryName= 2;
+  bool exactCategoryName =3;
+  bool includeAll =4;
+  bool includeActive =5;
+  bool includeChild =6;
+  bool includeProperty=7;
+  bool includeDetails =8;
+  string language= 9;
+}

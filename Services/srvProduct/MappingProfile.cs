@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using Google.Protobuf.WellKnownTypes;
-using srvMasters.DB;
-using srvMasters.protos;
+using srvProduct.DB;
+using srvProduct.protos;
 
-namespace srvMasters
+namespace srvProduct
 {
-    public class MappingProfile : Profile
+    public class MappingProfile:Profile
     {
         public MappingProfile()
         {
@@ -13,9 +13,10 @@ namespace srvMasters
                 .ConvertUsing(x => Timestamp.FromDateTime(DateTime.SpecifyKind(x, DateTimeKind.Utc)));
             CreateMap<Google.Protobuf.WellKnownTypes.Timestamp, DateTime>()
                 .ConvertUsing(x => x.ToDateTime());
-            CreateMap<mdlCurrency, tblCurrency>().ReverseMap();
-            CreateMap<mdlCountry, tblCountry>().ReverseMap();
-            CreateMap<mdlState, tblState>().ReverseMap();
+            CreateMap<mdlcategoryProperty, tblCategoryProperty>().ReverseMap();
+            CreateMap<mdlCategory, tblCategory>().ReverseMap()
+                .ForMember(x => x.CategoryProperties , opts => opts.PreCondition((src) => src.CategoryProperties != null));
+                
         }
     }
 }

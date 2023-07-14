@@ -1,6 +1,6 @@
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
-import "common.proto";
+import "protos/common.proto";
 
 option csharp_namespace = "srvMasters.protos";
 
@@ -11,7 +11,8 @@ service ICountryState {
   // Sends a greeting
   rpc GetCountry (mdlGetCountry) returns (mdlCountryList);
   rpc GetState (mdlGetState) returns (mdlStateList);
-  rpc SaveState (mdlState) returns (mdl);
+  rpc SaveState (mdlState) returns (common.mdlSaveResponse);
+  rpc SaveCountry (mdlCountry) returns (common.mdlSaveResponse);
 }
 
 message mdlCountryList{
@@ -59,13 +60,15 @@ message mdlState {
   string latitude= 5;
   string longitude= 6;
   repeated mdlCity cities=7;
+  string modifiedBy=11;
+  google.protobuf.Timestamp modifiedDt = 12;
 }
 
 message  mdlCity{
 	string cityName=1;
-	int productCount=2;
+	int32 productCount=2;
 	string latitude=3;
-	string Longitude=4; 
+	string longitude=4; 
 }
 
 message mdlGetState
@@ -78,9 +81,10 @@ message mdlGetState
 message mdlGetCountry
 {
 	string countryId=1;
-	string countryCode=1;
-	bool onlyActive=3;
-	bool allData=4;
+	string countryCode=2;
+	string countryName=3;
+	bool onlyActive=4;
+	bool allData=5;
 }
 
 
