@@ -85,9 +85,9 @@ namespace srvProduct.Services
         }
 
 
-        public override Task<mdlSaveResponse> SaveCategory(mdlCategory request, ServerCallContext context)
+        public override Task<mdlCategorySaveResponse> SaveCategory(mdlCategory request, ServerCallContext context)
         {
-            mdlSaveResponse returnData = new mdlSaveResponse();
+            mdlCategorySaveResponse returnData = new mdlCategorySaveResponse();
             try
             {
 

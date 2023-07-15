@@ -30,9 +30,20 @@ namespace API.Controllers
         {
             mdlCurrencyList returnList = new mdlCurrencyList();
             try {
-                using var channel = GrpcChannel.ForAddress(_grpcServices.Value.MasterServices);
-                var client =new ICurrency.ICurrencyClient(channel);
-                returnList = await client.GetCurrencyAsync(request);
+                if (!string.IsNullOrEmpty(request.CurrencyId) && _grpcServices.Value.IdLength != request.CurrencyId.Length)
+                {
+                    ModelState.AddModelError(nameof(request.CurrencyId), enmErrorMessage.IdentifierLength.ToString());
+                }
+                if (ModelState.IsValid)
+                {
+                    using var channel = GrpcChannel.ForAddress(_grpcServices.Value.MasterServices);
+                    var client =new ICurrency.ICurrencyClient(channel);
+                    returnList = await client.GetCurrencyAsync(request);
+                }
+                else
+                {
+                    return _apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+                }
             }
             catch (Exception ex)
             {
@@ -48,9 +59,24 @@ namespace API.Controllers
             mdlCurrencySaveResponse returnData = new mdlCurrencySaveResponse();
             try
             {
-                using var channel = GrpcChannel.ForAddress(_grpcServices.Value.MasterServices);
-                var client = new ICurrency.ICurrencyClient(channel);
-                returnData = await client.SaveCurrencyAsync(request);
+                if (!string.IsNullOrEmpty(request.CurrencyId) && _grpcServices.Value.IdLength != request.CurrencyId.Length)
+                {
+                    ModelState.AddModelError(nameof(request.CurrencyId), enmErrorMessage.IdentifierLength.ToString());
+                }
+                if (string.IsNullOrWhiteSpace(request.Code))
+                {
+                    ModelState.AddModelError(nameof(request.Code), enmErrorMessage.IdentifierRequired.ToString());
+                }
+                if (ModelState.IsValid)
+                {
+                    using var channel = GrpcChannel.ForAddress(_grpcServices.Value.MasterServices);
+                    var client = new ICurrency.ICurrencyClient(channel);
+                    returnData = await client.SaveCurrencyAsync(request);
+                }
+                else
+                {
+                    return _apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+                }
             }
             catch (Exception ex)
             {
@@ -58,6 +84,142 @@ namespace API.Controllers
                 _logger.LogError(ex, "Error: MasterController.GetAllCurrency() " + ex.Message);
             }
             return Ok(returnData);
+        }
+
+        [HttpPost]
+        [Route(nameof(SaveCountry))]
+        public async Task<IActionResult> SaveCountry([FromBody] mdlCountry request)
+        {
+            mdlCountryStateSaveResponse returnData = new mdlCountryStateSaveResponse();
+            try
+            {
+                if (!string.IsNullOrEmpty(request.CountryId) && _grpcServices.Value.IdLength != request.CountryId.Length)
+                {
+                    ModelState.AddModelError(nameof(request.CountryId), enmErrorMessage.IdentifierLength.ToString());
+                }
+                if (string.IsNullOrWhiteSpace(request.Code))
+                {
+                    ModelState.AddModelError(nameof(request.Code), enmErrorMessage.IdentifierRequired.ToString());
+                }
+                if (ModelState.IsValid)
+                {
+                    using var channel = GrpcChannel.ForAddress(_grpcServices.Value.MasterServices);
+                    var client = new ICountryState.ICountryStateClient(channel);
+                    returnData = await client.SaveCountryAsync(request);
+                }
+                else
+                {
+                    return _apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                returnData.Message = ex.Message;
+                _logger.LogError(ex, "Error: MasterController.SaveCountry() " + ex.Message);
+            }
+            return Ok(returnData);
+        }
+
+        [HttpPost]
+        [Route(nameof(SaveState))]
+        public async Task<IActionResult> SaveState([FromBody] mdlState request)
+        {
+            mdlCountryStateSaveResponse returnData = new mdlCountryStateSaveResponse();
+            try
+            {
+                if (string.IsNullOrEmpty(request.CountryId) )
+                {
+                    ModelState.AddModelError(nameof(request.CountryId), enmErrorMessage.IdentifierLength.ToString());
+                }
+                if (!string.IsNullOrEmpty(request.StateId) && _grpcServices.Value.IdLength != request.StateId.Length)
+                {
+                    ModelState.AddModelError(nameof(request.CountryId), enmErrorMessage.IdentifierRequired.ToString());
+                }
+                if (string.IsNullOrWhiteSpace(request.Name))
+                {
+                    ModelState.AddModelError(nameof(request.Name), enmErrorMessage.IdentifierRequired.ToString());
+                }
+                if (ModelState.IsValid)
+                {
+                    using var channel = GrpcChannel.ForAddress(_grpcServices.Value.MasterServices);
+                    var client = new ICountryState.ICountryStateClient(channel);
+                    returnData = await client.SaveStateAsync(request);
+                }
+                else
+                {
+                    return _apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                returnData.Message = ex.Message;
+                _logger.LogError(ex, "Error: MasterController.SaveState() " + ex.Message);
+            }
+            return Ok(returnData);
+        }
+
+        [HttpGet]
+        [Route(nameof(GetAllState))]
+        public async Task<IActionResult> GetAllState([FromQuery] mdlGetState request)
+        {
+            mdlStateList returnList = new mdlStateList();
+            try
+            {
+                if (!string.IsNullOrEmpty(request.StateId) && _grpcServices.Value.IdLength != request.StateId.Length)
+                {
+                    ModelState.AddModelError(nameof(request.StateId), enmErrorMessage.IdentifierLength.ToString());
+                }
+                if (!string.IsNullOrEmpty(request.CountryId) && _grpcServices.Value.IdLength != request.CountryId.Length)
+                {
+                    ModelState.AddModelError(nameof(request.CountryId), enmErrorMessage.IdentifierLength.ToString());
+                }
+                if (ModelState.IsValid)
+                {
+                    using var channel = GrpcChannel.ForAddress(_grpcServices.Value.MasterServices);
+                    var client = new ICountryState.ICountryStateClient(channel);
+                    returnList = await client.GetStateAsync(request);
+                }
+                else
+                {
+                    return _apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error: MasterController.GetAllState() " + ex.Message);
+            }
+            return Ok(returnList);
+        }
+
+        [HttpGet]
+        [Route(nameof(GetAllCountry))]
+        public async Task<IActionResult> GetAllCountry([FromQuery] mdlGetCountry request)
+        {
+            mdlCountryList returnList = new mdlCountryList();
+            try
+            {                
+                if (!string.IsNullOrEmpty(request.CountryId) && _grpcServices.Value.IdLength != request.CountryId.Length)
+                {
+                    ModelState.AddModelError(nameof(request.CountryId), enmErrorMessage.IdentifierLength.ToString());
+                }
+                if (ModelState.IsValid)
+                {
+                    using var channel = GrpcChannel.ForAddress(_grpcServices.Value.MasterServices);
+                    var client = new ICountryState.ICountryStateClient(channel);
+                    returnList = await client.GetCountryAsync(request);
+                }
+                else
+                {
+                    return _apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error: MasterController.GetAllCountry() " + ex.Message);
+            }
+            return Ok(returnList);
         }
     }
 }

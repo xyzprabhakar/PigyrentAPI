@@ -33,6 +33,9 @@
     <Protobuf Include="..\Services\srvMasters\Protos\currency.proto" GrpcServices="Client">
       <Link>Protos\currency.proto</Link>
     </Protobuf>
+    <Protobuf Include="..\Services\srvProduct\Protos\category.proto" GrpcServices="Client">
+      <Link>Protos\category.proto</Link>
+    </Protobuf>
   </ItemGroup>
 
 </Project>

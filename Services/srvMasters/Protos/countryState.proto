@@ -1,5 +1,6 @@
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
 option csharp_namespace = "srvMasters.protos";
 
 package countryState;
@@ -24,39 +25,39 @@ message mdlStateList{
 message mdlCountry {
   string countryId= 1;
   string code= 2;
-  string name= 3;
-  string phoneCode= 4;
-  string capital= 5;
+  google.protobuf.StringValue name= 3;
+  google.protobuf.StringValue phoneCode= 4;
+  google.protobuf.StringValue capital= 5;
   bool isActive=6;
   repeated mdlCountryTopCity cities =7;
   repeated string currency=8;
   repeated string languages=9;
   repeated mdlCountryTimeZone timeZones=10;
-  string modifiedBy=11;
+  google.protobuf.StringValue modifiedBy=11;
   google.protobuf.Timestamp modifiedDt = 12;
 }
 
 message mdlCountryTopCity {
 	string cityName=1;
-	string stateId=2;
-	string productCount=3;
+	google.protobuf.StringValue stateId=2;
+	int32 productCount=3;
 }
 
 message mdlCountryTimeZone{
-	string zoneName=1;
-	string offset=2;
-	string offsetName=3;
-	string abbreviation=4;
-	string tzName=5;	
+	google.protobuf.StringValue zoneName=1;
+	google.protobuf.StringValue offset=2;
+	google.protobuf.StringValue offsetName=3;
+	google.protobuf.StringValue abbreviation=4;
+	google.protobuf.StringValue tzName=5;	
 }
 
 message mdlState {
   string stateId = 1;
-  string code = 2;
+  google.protobuf.StringValue code = 2;
   string name = 3;
-  string countryId = 4;
-  string latitude= 5;
-  string longitude= 6;
+  google.protobuf.StringValue countryId = 4;
+  google.protobuf.StringValue latitude= 5;
+  google.protobuf.StringValue longitude= 6;
   repeated mdlCity cities=7;
   string modifiedBy=11;
   google.protobuf.Timestamp modifiedDt = 12;
@@ -65,22 +66,22 @@ message mdlState {
 message  mdlCity{
 	string cityName=1;
 	int32 productCount=2;
-	string latitude=3;
-	string longitude=4; 
+	google.protobuf.StringValue latitude=3;
+	google.protobuf.StringValue longitude=4; 
 }
 
 message mdlGetState
 {
-	string stateId=1;
-	string countryId=2;
+	google.protobuf.StringValue stateId=1;
+	google.protobuf.StringValue countryId=2;
 	bool onlyActive=3;
 	bool allData=4;
 }
 message mdlGetCountry
 {
-	string countryId=1;
-	string countryCode=2;
-	string countryName=3;
+	google.protobuf.StringValue countryId=1;
+	google.protobuf.StringValue countryCode=2;
+	google.protobuf.StringValue countryName=3;
 	bool onlyActive=4;
 	bool allData=5;
 }
