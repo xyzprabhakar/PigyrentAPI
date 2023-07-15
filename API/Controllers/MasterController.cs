@@ -31,7 +31,7 @@ namespace API.Controllers
             mdlCurrencyList returnList = new mdlCurrencyList();
             try {
                 using var channel = GrpcChannel.ForAddress(_grpcServices.Value.MasterServices);
-                var client = //new ICurrency. channel.CreateGrpcService<ICurrencyService>();
+                var client = ICurrency.ICurrencyBase.
             }
             catch (Exception ex)
             {
