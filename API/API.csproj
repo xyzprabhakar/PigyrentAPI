@@ -27,10 +27,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="..\Services\srvMasters\Protos\countryState.proto" GrpcServices="Server">
+    <Protobuf Include="..\Services\srvMasters\Protos\countryState.proto" GrpcServices="Client">
       <Link>Protos\countryState.proto</Link>
     </Protobuf>
-    <Protobuf Include="..\Services\srvMasters\Protos\currency.proto" GrpcServices="Server">
+    <Protobuf Include="..\Services\srvMasters\Protos\currency.proto" GrpcServices="Client">
       <Link>Protos\currency.proto</Link>
     </Protobuf>
   </ItemGroup>
