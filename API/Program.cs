@@ -1,7 +1,7 @@
 using API;
 using Serilog;
 
-Environment.SetEnvironmentVariable("ASPNETCORE_PREVENTHOSTINGSTARTUP", "true");
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<GRPCServices>(builder.Configuration.GetSection("GRPCServices"));

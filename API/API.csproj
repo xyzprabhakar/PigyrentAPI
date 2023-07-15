@@ -15,15 +15,24 @@
 
   <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.23.2" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.49.0" />
     <PackageReference Include="Grpc.Net.Client" Version="2.53.0" />
     <PackageReference Include="Grpc.Tools" Version="2.54.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="protobuf-net.Grpc" Version="1.1.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-    <ProjectReference Include="..\Services\SharedProt\MasterServicesProt\MasterServicesProt.csproj" />
-    <ProjectReference Include="..\Services\SharedProt\ProductServicesProt\ProductServicesProt.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="..\Services\srvMasters\Protos\countryState.proto" GrpcServices="Server">
+      <Link>Protos\countryState.proto</Link>
+    </Protobuf>
+    <Protobuf Include="..\Services\srvMasters\Protos\currency.proto" GrpcServices="Server">
+      <Link>Protos\currency.proto</Link>
+    </Protobuf>
   </ItemGroup>
 
 </Project>

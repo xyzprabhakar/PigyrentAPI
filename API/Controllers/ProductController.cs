@@ -2,8 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Grpc.Net.Client;
 using ProtoBuf.Grpc.Client;
-using ProductServicesProt;
-using DTO;
 using Microsoft.Extensions.Options;
 using API.Models;
 using System.ServiceModel.Channels;
@@ -29,55 +27,57 @@ namespace API.Controllers
         
         [HttpGet]
         [Route("GetCategory")]        
-        public async Task<IActionResult> GetCategory([FromQuery] CategoryRequest categoryRequest)
+        public async Task<IActionResult> GetCategory()
         {
-            ReturnList <Category> returnList = new ();
-            if (!string.IsNullOrEmpty(categoryRequest.CategoryId) && categoryRequest.CategoryId.Length!=24)
-            {
-                ModelState.AddModelError(nameof(CategoryRequest.CategoryId), enmErrorMessage.IdentifierLength.ToString());
-            }
-            if (ModelState.IsValid)
-            {
-                using var channel = GrpcChannel.ForAddress(_grpcServices.Value.ProductServices);
-                var client = channel.CreateGrpcService<ICategoryService>();
-                returnList = await client.Get(categoryRequest);
-            }
-            else
-            {
-                return _apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
-            }
-            return Ok( returnList);
+            throw new NotImplementedException();
+            //ReturnList <Category> returnList = new ();
+            //if (!string.IsNullOrEmpty(categoryRequest.CategoryId) && categoryRequest.CategoryId.Length!=24)
+            //{
+            //    ModelState.AddModelError(nameof(CategoryRequest.CategoryId), enmErrorMessage.IdentifierLength.ToString());
+            //}
+            //if (ModelState.IsValid)
+            //{
+            //    using var channel = GrpcChannel.ForAddress(_grpcServices.Value.ProductServices);
+            //    var client = channel.CreateGrpcService<ICategoryService>();
+            //    returnList = await client.Get(categoryRequest);
+            //}
+            //else
+            //{
+            //    return _apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+            //}
+            //return Ok( returnList);
 
         }
 
         [HttpPost]
         [Route("SaveCategory")]
-        public async Task<IActionResult> SaveCategory([FromBody] Category request)
+        public async Task<IActionResult> SaveCategory()
         {
-            ReturnData returnData = new ();
-            try
-            {
-                if (string.IsNullOrWhiteSpace(request.Name))
-                {
-                    ModelState.AddModelError(nameof(Category.Name), enmErrorMessage.IdentifierRequired.ToString());
-                }
-                if (ModelState.IsValid)
-                {
-                    using var channel = GrpcChannel.ForAddress(_grpcServices.Value.ProductServices);
-                    var client = channel.CreateGrpcService<ICategoryService>();
-                    returnData = await client.Save(request);
-                }
-                else
-                {
-                    return _apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
-                }
-            }
-            catch (Exception ex)
-            {
-                returnData.Message = ex.Message;
-                _logger.LogError(ex, "Error: ProductController.SaveCategory() " + ex.Message);
-            }
-            return Ok(returnData);
+            throw new NotImplementedException();
+            //ReturnData returnData = new ();
+            //try
+            //{
+            //    if (string.IsNullOrWhiteSpace(request.Name))
+            //    {
+            //        ModelState.AddModelError(nameof(Category.Name), enmErrorMessage.IdentifierRequired.ToString());
+            //    }
+            //    if (ModelState.IsValid)
+            //    {
+            //        using var channel = GrpcChannel.ForAddress(_grpcServices.Value.ProductServices);
+            //        var client = channel.CreateGrpcService<ICategoryService>();
+            //        returnData = await client.Save(request);
+            //    }
+            //    else
+            //    {
+            //        return _apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    returnData.Message = ex.Message;
+            //    _logger.LogError(ex, "Error: ProductController.SaveCategory() " + ex.Message);
+            //}
+            //return Ok(returnData);
             
         }
     }

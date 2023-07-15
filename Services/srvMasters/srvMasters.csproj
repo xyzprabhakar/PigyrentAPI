@@ -16,7 +16,7 @@
   <ItemGroup>
     <Protobuf Include="Protos\countryState.proto" GrpcServices="Server" />
 	<Protobuf Include="Protos\currency.proto" GrpcServices="Server" />
-	<Protobuf Include="Protos\common.proto" GrpcServices="Server" />
+	<Protobuf Include="common.proto" GrpcServices="Server" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Protos\common.proto">
+    <None Update="common.proto">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

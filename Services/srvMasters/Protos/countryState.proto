@@ -1,6 +1,6 @@
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
-import "protos/common.proto";
+import "common.proto";
 
 option csharp_namespace = "srvMasters.protos";
 
