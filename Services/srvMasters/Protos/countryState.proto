@@ -1,7 +1,5 @@
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
-import "common.proto";
-
 option csharp_namespace = "srvMasters.protos";
 
 package countryState;
@@ -11,8 +9,8 @@ service ICountryState {
   // Sends a greeting
   rpc GetCountry (mdlGetCountry) returns (mdlCountryList);
   rpc GetState (mdlGetState) returns (mdlStateList);
-  rpc SaveState (mdlState) returns (common.mdlSaveResponse);
-  rpc SaveCountry (mdlCountry) returns (common.mdlSaveResponse);
+  rpc SaveState (mdlState) returns (mdlCountryStateSaveResponse);
+  rpc SaveCountry (mdlCountry) returns (mdlCountryStateSaveResponse);
 }
 
 message mdlCountryList{
@@ -87,4 +85,9 @@ message mdlGetCountry
 	bool allData=5;
 }
 
-
+message mdlCountryStateSaveResponse
+{
+	bool status=1;
+	string message=2;
+	string messageId =3;	
+}

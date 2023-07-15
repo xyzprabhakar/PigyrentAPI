@@ -57,9 +57,9 @@ namespace srvMasters.Services
 
         }
 
-        public override Task<mdlSaveResponse> SaveCurrency(mdlCurrency request, ServerCallContext context)
+        public override Task<mdlCurrencySaveResponse> SaveCurrency(mdlCurrency request, ServerCallContext context)
         {
-            mdlSaveResponse returnData = new mdlSaveResponse() ;
+            mdlCurrencySaveResponse returnData = new mdlCurrencySaveResponse() ;
             try
             {
                 bool isUpdate = true;

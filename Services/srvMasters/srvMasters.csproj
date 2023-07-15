@@ -14,9 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\countryState.proto" GrpcServices="Server" />
-	<Protobuf Include="Protos\currency.proto" GrpcServices="Server" />
-	<Protobuf Include="common.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\countryState.proto" GrpcServices="Both" />
+	<Protobuf Include="Protos\currency.proto" GrpcServices="Both" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,12 +24,6 @@
     <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.55.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.20.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="common.proto">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

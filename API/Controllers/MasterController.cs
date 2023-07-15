@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
 using ProtoBuf.Grpc.Client;
+using srvMasters.protos;
 using System.Net.Mail;
 
 namespace API.Controllers
@@ -25,10 +26,20 @@ namespace API.Controllers
 
         [HttpGet]
         [Route(nameof(GetAllCurrency))]
-        public async Task<IActionResult> GetAllCurrency([FromQuery] string? currencyId, [FromQuery] string? code, [FromQuery] bool allData)
+        public async Task<IActionResult> GetAllCurrency([FromQuery]mdlCurrencyRequest request)
         {
-            throw new NotImplementedException();
-            
+            mdlCurrencyList returnList = new mdlCurrencyList();
+            try {
+                using var channel = GrpcChannel.ForAddress(_grpcServices.Value.MasterServices);
+                var client = //new ICurrency. channel.CreateGrpcService<ICurrencyService>();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error: MasterController.GetAllCurrency() " + ex.Message);
+            }
+            return Ok(returnList);
+
+
             //ReturnList<> returnList = new() { ReturnData=new ()};
             //bool loadById=false;
             //RequestData requestData = new RequestData() { RequestId=string.Empty};
@@ -65,7 +76,7 @@ namespace API.Controllers
             //        }
             //        else if (allData)
             //        {
-                        
+
             //            returnList =await client.GetAll()??new ReturnList<mdlCurrency>();
             //        }
 

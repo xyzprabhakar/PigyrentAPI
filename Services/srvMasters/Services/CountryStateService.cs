@@ -100,9 +100,9 @@ namespace srvMasters.Services
             return Task.FromResult(returnData);
         }
 
-        public override Task<mdlSaveResponse> SaveCountry(mdlCountry request, ServerCallContext context)
+        public override Task<mdlCountryStateSaveResponse> SaveCountry(mdlCountry request, ServerCallContext context)
         {
-            mdlSaveResponse returnData = new mdlSaveResponse();
+            mdlCountryStateSaveResponse returnData = new mdlCountryStateSaveResponse();
             try
             {
                 bool isUpdate = true;
@@ -141,9 +141,9 @@ namespace srvMasters.Services
             return Task.FromResult(returnData);
         }
 
-        public override Task<mdlSaveResponse> SaveState(mdlState request, ServerCallContext context)
+        public override Task<mdlCountryStateSaveResponse> SaveState(mdlState request, ServerCallContext context)
         {
-            mdlSaveResponse returnData = new mdlSaveResponse();
+            mdlCountryStateSaveResponse returnData = new mdlCountryStateSaveResponse();
             try
             {
                 bool isUpdate = true;
