@@ -16,7 +16,7 @@ service ICategoryService {
   rpc GetCategoryById(mdlCategoryNameRequest) returns (mdlCategoryList);  
   rpc GetAllCategoryIncludeSubCategory(mdlCategoryRequest)returns (mdlCategoryList);
   
-  rpc GetAllSubCategory(mdlCategoryRequest) returns (mdlSubCategoryList);
+  rpc GetAllSubCategory(mdlSubCategoryRequest) returns (mdlSubCategoryList);
   rpc GetSubCategoryByName(mdlCategoryNameRequest) returns (mdlSubCategoryList);
   rpc GetSubCategoryById(mdlCategoryNameRequest) returns (mdlSubCategoryList);  
   
@@ -50,7 +50,7 @@ message mdlSubCategory
   bool isActive=3;    
   string defaultName=4;
   google.protobuf.StringValue imageUrl=5;  
-  repeated mdlCategoryDetails categoryDetail= 6;
+  repeated mdlSubCategoryDetails subCategoryDetail= 6;
   string modifiedBy=7;
   google.protobuf.Timestamp modifiedDt = 8;
 }
@@ -91,12 +91,27 @@ message mdlCategoryRequest
     bool includeAllLanguage=2;
     repeated string language=3;
 }
+message mdlSubCategoryRequest
+{
+    bool includeActiveOnly=1;
+    bool includeAllLanguage=2;
+    repeated string language=3;
+    bool includeProperty=4;
+}
 
 message mdlCategoryList {
-    repeated mdlCategory category=1;
+    bool status=1;
+	string message=2;
+	string messageId =3;	
+    int32  statusId=4;
+    repeated mdlCategory category=5;
 }
 message mdlSubCategoryList {
-    repeated mdlSubCategory subCategory=1;
+    bool status=1;
+	string message=2;
+	string messageId =3;	
+    int32  statusId=4;
+    repeated mdlSubCategory subCategory=5;
 }
 
 
@@ -112,7 +127,7 @@ message mdlCategoryWrapper
 
 message mdlSubCategoryWrapper
 {
-    mdlSubCategory category=1;
+    mdlSubCategory subCategory=1;
     bool allLanguage=2;
     repeated string language=3;
 }

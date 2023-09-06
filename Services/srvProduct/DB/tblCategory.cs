@@ -15,6 +15,8 @@ namespace srvProduct.DB
         public string? ImageUrl { get; set; }
         public string? ModifiedBy { get; set; }
         public DateTime ModifiedDt { get; set; }
+        public string? CreatedBy { get; set; }
+        public DateTime CreatedDt { get; set; }
     }
 
     public  abstract class BasicDetails
@@ -32,7 +34,7 @@ namespace srvProduct.DB
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? CategoryDetailId { get; set; }        
-        public MongoDBRef? CategoryId { get; set; }
+        public string? CategoryId { get; set; }
     }
     public class tblProperty
     {
@@ -50,7 +52,7 @@ namespace srvProduct.DB
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? SubCategoryId { get; set; }        
-        public MongoDBRef? CategoryId { get; set; } 
+        public string? CategoryId { get; set; } 
         public string DefaultName { get; set; } = null!;
         public bool IsActive { get; set; }
         public string? ImageUrl { get; set; }        
@@ -60,14 +62,12 @@ namespace srvProduct.DB
         public DateTime CreatedDt { get; set; }
     }
 
-    
-
-    public class tblSubCategoryDetails : BasicDetails
+    public class tblSubCategoryDetail : BasicDetails
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? SubCategoryDetailId { get; set; }
-        public MongoDBRef? SubCategoryId { get; set; } 
+        public string? SubCategoryId { get; set; } 
         public List<string> Keywords { get; set; } = null!;
         public List<tblProperty> Properties { get; set; } = null!;
     }

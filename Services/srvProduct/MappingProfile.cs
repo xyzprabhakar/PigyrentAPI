@@ -17,7 +17,7 @@ namespace srvProduct
             CreateMap<mdlProperty, tblProperty>().ReverseMap();
             CreateMap<mdlCategoryDetails,tblCategoryDetail>().ReverseMap();
             CreateMap<mdlCategory,tblCategoryMaster>().ReverseMap();
-            CreateMap<mdlSubCategoryDetails,tblSubCategoryDetails>().ReverseMap()
+            CreateMap<mdlSubCategoryDetails,tblSubCategoryDetail>().ReverseMap()
                 .ForMember(x => x.Properties, opts => opts.PreCondition((src) => src.Properties != null)); ;
             CreateMap<mdlSubCategory, tblSubCategoryMaster>().ReverseMap();
             
