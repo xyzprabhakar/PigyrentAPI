@@ -13,10 +13,15 @@ namespace srvProduct
                 .ConvertUsing(x => Timestamp.FromDateTime(DateTime.SpecifyKind(x, DateTimeKind.Utc)));
             CreateMap<Google.Protobuf.WellKnownTypes.Timestamp, DateTime>()
                 .ConvertUsing(x => x.ToDateTime());
-            CreateMap<mdlcategoryProperty, tblCategoryProperty>().ReverseMap();
-            CreateMap<mdlCategory, tblCategory>().ReverseMap()
-                .ForMember(x => x.CategoryProperties , opts => opts.PreCondition((src) => src.CategoryProperties != null));
-                
+            
+            CreateMap<mdlProperty, tblProperty>().ReverseMap();
+            CreateMap<mdlCategoryDetails,tblCategoryDetail>().ReverseMap();
+            CreateMap<mdlCategory,tblCategoryMaster>().ReverseMap();
+            CreateMap<mdlSubCategoryDetails,tblSubCategoryDetails>().ReverseMap()
+                .ForMember(x => x.Properties, opts => opts.PreCondition((src) => src.Properties != null)); ;
+            CreateMap<mdlSubCategory, tblSubCategoryMaster>().ReverseMap();
+            
+
         }
     }
 }

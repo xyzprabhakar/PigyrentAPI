@@ -31,7 +31,7 @@ if (env.IsDevelopment())
 }
 
 // Configure the HTTP request pipeline.
-app.MapGrpcService<CategoryService>();
+//app.MapGrpcService<CategoryService>();
 app.MapGet("/", () => "Product Services");
 
 app.Run();

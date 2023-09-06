@@ -6,33 +6,41 @@ option csharp_namespace = "srvProduct.protos";
 package category;
 
 
-service ICategoryService {  
+service ICategoryService { 
+    
   rpc SaveCategory(mdlCategoryWrapper) returns (mdlCategorySaveResponse);
-  rpc GetCategory(mdlCategoryRequest) returns (mdlCategoryList);
+  rpc SaveSubCategory(mdlSubCategoryWrapper) returns (mdlCategorySaveResponse);
+  
+  rpc GetAllCategory(mdlCategoryRequest) returns (mdlCategoryList);
+  rpc GetCategoryByName(mdlCategoryNameRequest) returns (mdlCategoryList);
+  rpc GetCategoryById(mdlCategoryNameRequest) returns (mdlCategoryList);  
+  rpc GetAllCategoryIncludeSubCategory(mdlCategoryRequest)returns (mdlCategoryList);
+  
+  rpc GetAllSubCategory(mdlCategoryRequest) returns (mdlSubCategoryList);
+  rpc GetSubCategoryByName(mdlCategoryNameRequest) returns (mdlSubCategoryList);
+  rpc GetSubCategoryById(mdlCategoryNameRequest) returns (mdlSubCategoryList);  
+  
 }
 
 
-
-message mdlCategoryList {
-    repeated mdlCategory category=1;
-}
-message mdlCategoryDetails
-{
-    google.protobuf.StringValue language = 1;
-    google.protobuf.StringValue title = 2;
-    string name = 3;
-    google.protobuf.StringValue shortDesc = 4;
-}
-
-// The request message containing the user's name.
 message mdlCategory {
   string categoryId = 1;
-  bool isActive=2;    
-  google.protobuf.StringValue imageUrl=3;  
-  repeated mdlCategoryDetails categoryDetail= 4;
-  string modifiedBy=5;
-  google.protobuf.Timestamp modifiedDt = 6;
-  repeated mdlSubCategory subCategory=7;
+  bool isActive=2;
+  string defaultName=3;
+  google.protobuf.StringValue imageUrl=4;  
+  repeated mdlCategoryDetails categoryDetail= 5;
+  string modifiedBy=6;
+  google.protobuf.Timestamp modifiedDt = 7;
+  repeated mdlSubCategory subCategory=8;
+}
+
+message mdlCategoryDetails
+{
+    google.protobuf.StringValue categoryDetailId = 1;
+    google.protobuf.StringValue language = 2;
+    google.protobuf.StringValue title = 3;
+    string name = 4;
+    google.protobuf.StringValue shortDesc = 5;
 }
 
 message mdlSubCategory
@@ -40,20 +48,22 @@ message mdlSubCategory
   string subCategoryId = 1;
   string categoryId = 2;
   bool isActive=3;    
-  google.protobuf.StringValue imageUrl=3;  
-  repeated mdlCategoryDetails categoryDetail= 9;
-  string modifiedBy=10;
-  google.protobuf.Timestamp modifiedDt = 11;
+  string defaultName=4;
+  google.protobuf.StringValue imageUrl=5;  
+  repeated mdlCategoryDetails categoryDetail= 6;
+  string modifiedBy=7;
+  google.protobuf.Timestamp modifiedDt = 8;
 }
 
 message mdlSubCategoryDetails
 {
-    google.protobuf.StringValue language = 1;
-    google.protobuf.StringValue title = 2;
-    string name = 3;
-    google.protobuf.StringValue shortDesc = 4;
-    repeated string keywords =5;    
-    repeated mdlProperty Properties =6;
+    google.protobuf.StringValue subCategoryDetailId = 1;
+    google.protobuf.StringValue language = 2;
+    google.protobuf.StringValue title = 3;
+    string name = 4;
+    google.protobuf.StringValue shortDesc = 5;
+    repeated string keywords =6;    
+    repeated mdlProperty Properties =7;
 }
 
 
@@ -67,59 +77,44 @@ message mdlProperty{
     repeated string option=7;
 }
 
-    enum enmPropertyType
-    {
-        Label=0;
-        Text=1;
-        Number=2;
-        Date=3;
-        DateTime=4;
-        Select=5;
-        SelectMultiple=6;
-        Checkbox = 7;
-        RadioButtion = 8;
-    }
 
 
-// The response message containing the greetings.
-message mdlCategoryRequest {
-  google.protobuf.StringValue categoryId= 1;
-  google.protobuf.StringValue categoryName= 2;
-  bool exactCategoryName =3;
-  bool includeAll =4;
-  bool includeActive =5;
-  bool includeChild =6;  
-  bool includeDetails =7;
-  bool includeAllLanguage =8;
-  repeated google.protobuf.StringValue language= 9;
+message mdlCategoryNameRequest
+{
+    string name = 1;
+    bool exactCategoryName =2;
 }
 
-message mdlSubCategoryRequest {
-  google.protobuf.StringValue subCategoryId= 1;
-  google.protobuf.StringValue categoryId= 2;
-  repeated google.protobuf.StringValue categoryIds= 3;
-  google.protobuf.StringValue subCategoryName= 4;
-  bool exactsubCategoryName =3;
-  bool includeAll =4;
-  bool includeActive =5;
-  bool includeChild =6;
-  bool includeProperty=7;
-  bool includeDetails =8;
-  bool includeAllLanguage =9;
-  repeated google.protobuf.StringValue language= 10;
+message mdlCategoryRequest
+{
+    bool includeActiveOnly=1;
+    bool includeAllLanguage=2;
+    repeated string language=3;
 }
+
+message mdlCategoryList {
+    repeated mdlCategory category=1;
+}
+message mdlSubCategoryList {
+    repeated mdlSubCategory subCategory=1;
+}
+
+
+
 
 
 message mdlCategoryWrapper
 {
     mdlCategory category=1;
-    repeated string language=2;
+    bool allLanguage=2;
+    repeated string language=3;
 }
 
 message mdlSubCategoryWrapper
 {
     mdlSubCategory category=1;
-    repeated string language=2;
+    bool allLanguage=2;
+    repeated string language=3;
 }
 
 message mdlCategorySaveResponse
@@ -127,4 +122,18 @@ message mdlCategorySaveResponse
 	bool status=1;
 	string message=2;
 	string messageId =3;	
+    int32  statusId=4;
+}
+
+enum enmPropertyType
+{
+    Label=0;
+    Text=1;
+    Number=2;
+    Date=3;
+    DateTime=4;
+    Select=5;
+    SelectMultiple=6;
+    Checkbox = 7;
+    RadioButtion = 8;
 }
