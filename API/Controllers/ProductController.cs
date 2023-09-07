@@ -14,7 +14,9 @@ namespace API.Controllers
     [Route("[controller]")]
     public class ProductController : ControllerBase
     {
-        
+
+#if (false)
+
         private readonly ILogger<ProductController> _logger;
         private readonly IOptions<GRPCServices> _grpcServices;
         private readonly IOptions<ApiBehaviorOptions> _apiBehaviorOptions;
@@ -92,5 +94,6 @@ namespace API.Controllers
             }
             return Ok(returnData);
         }
+#endif
     }
 }
