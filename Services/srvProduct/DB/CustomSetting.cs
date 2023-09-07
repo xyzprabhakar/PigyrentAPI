@@ -1,6 +1,6 @@
 ﻿namespace srvProduct.DB
 {
-    public class DbSetting
+    public class CustomSetting
     {
         public string ConnectionString { get; set; } = null!;
         public string DatabaseName { get; set; } = null!;

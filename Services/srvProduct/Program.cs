@@ -1,12 +1,18 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using srvProduct;
 using srvProduct.DB;
 using srvProduct.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.Configure<DbSetting>(
-    builder.Configuration.GetSection("DbSetting"));
+builder.Services.Configure<CustomSetting>(
+    builder.Configuration.GetSection("CustomSetting"));
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddDbContext<ProductContext>(options=>options.UseMySql( connectionString,ServerVersion.AutoDetect(connectionString)));
+
 
 var mapperConfig = new MapperConfiguration(mc =>
 {

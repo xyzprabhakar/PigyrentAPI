@@ -14,14 +14,24 @@ namespace srvProduct.Services
 {
     public class CategoryService : ICategoryService.ICategoryServiceBase
     {
+        private readonly IMapper _mapper;
+        private readonly ILogger<CategoryService> _logger;
+        private readonly ProductContext _productContext;
+        public CategoryService(ProductContext productContext, IMapper mapper, ILogger<CategoryService> logger) {
+            _productContext = productContext;
+            _mapper = mapper;
+            _logger = logger;
+        }
+#if (false)
         private readonly IMongoCollection<tblCategoryMaster> _category;
         private readonly IMongoCollection<tblCategoryDetail> _categoryDetail;
         private readonly IMongoCollection<tblSubCategoryMaster> _subCategory;
         private readonly IMongoCollection<tblSubCategoryDetail> _subCategoryDetail;
         private readonly IMapper _mapper;
         private readonly ILogger<CategoryService> _logger;
-        private IOptions<DbSetting> _dbSetting;
-        public CategoryService(IOptions<DbSetting> dbSetting, IMapper mapper, ILogger<CategoryService> logger)
+        private IOptions<CustomSetting> _dbSetting;
+        private readonly ProductContext _productContext;
+        public CategoryService(ProductContext productContext , IOptions<CustomSetting> dbSetting, IMapper mapper, ILogger<CategoryService> logger)
         {
             var mongoClient = new MongoClient(dbSetting.Value.ConnectionString);
             var mongoDatabase = mongoClient.GetDatabase(dbSetting.Value.DatabaseName);
@@ -32,6 +42,7 @@ namespace srvProduct.Services
             _dbSetting = dbSetting;
             _mapper = mapper;
             _logger = logger;
+            _productContext = productContext;
         }
 
         public override Task<mdlCategorySaveResponse> SaveCategory(mdlCategoryWrapper request, ServerCallContext context)
@@ -47,6 +58,7 @@ namespace srvProduct.Services
                 {
                     isUpdate = false;
                 }
+
 
                 if (_category.Find(p => p.CategoryId != categoryId && p.DefaultName.ToLower() == request.Category.DefaultName.ToLower()).Any())
                 {
@@ -297,13 +309,16 @@ namespace srvProduct.Services
 
         public override async Task<mdlCategoryList> GetAllCategoryIncludeSubCategory(mdlCategoryRequest request, ServerCallContext context)
         {
-            var retunData=await GetAllCategory(request, context);
-            var subCategoryData =await GetAllSubCategory(request, context);
-            foreach (var category in retunData.Category) {
-                category.SubCategory.AddRange(subCategoryData.SubCategory.Where(p => p.CategoryId == category.CategoryId));
-            }
-            return retunData;
+            throw new NotImplementedException();
+            //var retunData=await GetAllCategory(request, context);
+            //var subCategoryData =await GetAllSubCategory(request, context);
+            //foreach (var category in retunData.Category) {
+            //    category.SubCategory.AddRange(subCategoryData.SubCategory.Where(p => p.CategoryId == category.CategoryId));
+            //}
+            //return retunData;
+
         }
+#endif
     }
 
 
