@@ -13,12 +13,12 @@ service ICategoryService {
   
   rpc GetAllCategory(mdlCategoryRequest) returns (mdlCategoryList);
   rpc GetCategoryByName(mdlCategoryNameRequest) returns (mdlCategoryList);
-  rpc GetCategoryById(mdlCategoryNameRequest) returns (mdlCategoryList);  
+  rpc GetCategoryById(mdlCategoryIdRequest) returns (mdlCategoryList);  
   rpc GetAllCategoryIncludeSubCategory(mdlCategoryRequest)returns (mdlCategoryList);
   
   rpc GetAllSubCategory(mdlSubCategoryRequest) returns (mdlSubCategoryList);
-  rpc GetSubCategoryByName(mdlCategoryNameRequest) returns (mdlSubCategoryList);
-  rpc GetSubCategoryById(mdlCategoryNameRequest) returns (mdlSubCategoryList);  
+  rpc GetSubCategoryByName(mdlSubCategoryNameRequest) returns (mdlSubCategoryList);
+  rpc GetSubCategoryById(mdlSubCategoryIdRequest) returns (mdlSubCategoryList);  
   
 }
 
@@ -81,8 +81,28 @@ message mdlProperty{
 
 message mdlCategoryNameRequest
 {
-    string name = 1;
-    bool exactCategoryName =2;
+    string name = 1;    
+    bool includeAllLanguage=2;
+    repeated string language=3;
+}
+message mdlCategoryIdRequest
+{
+    string categoryId = 1;    
+    bool includeAllLanguage=2;
+    repeated string language=3;
+}
+message mdlSubCategoryNameRequest
+{
+    string name = 1;    
+    bool includeAllLanguage=2;
+    repeated string language=3;
+}
+message mdlSubCategoryIdRequest
+{
+    string subCategoryId = 1;    
+    bool includeAllLanguage=2;
+    repeated string language=3;
+    string categoryId = 4; 
 }
 
 message mdlCategoryRequest

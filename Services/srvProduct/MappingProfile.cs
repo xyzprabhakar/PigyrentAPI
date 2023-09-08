@@ -14,7 +14,7 @@ namespace srvProduct
             CreateMap<Google.Protobuf.WellKnownTypes.Timestamp, DateTime>()
                 .ConvertUsing(x => x.ToDateTime());
 
-            CreateMap<string, Guid>().ConvertUsing(s => Guid.Parse(s));
+            CreateMap<string, Guid>().ConvertUsing(s => string.IsNullOrWhiteSpace(s) ? Guid.Empty : Guid.Parse(s));
             CreateMap<string, Guid?>().ConvertUsing(s => string.IsNullOrWhiteSpace(s) ? (Guid?)null : Guid.Parse(s));
             CreateMap<Guid?, string>().ConvertUsing(g => g.HasValue?g.Value.ToString("N"):string.Empty);
             CreateMap<Guid, string>().ConvertUsing(g => g.ToString("N"));
