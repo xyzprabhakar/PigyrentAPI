@@ -1,7 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
+﻿
 using srvProduct.protos;
-using MongoDB.Driver;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -21,6 +19,7 @@ namespace srvProduct.DB
         public string? ModifiedBy { get; set; }
         public DateTime ModifiedDt { get; set; }
         public bool IsDeleted { get; set; }
+        [MaxLength(64)]
         public string? CreatedBy { get; set; }
         public DateTime CreatedDt { get; set; }
     }

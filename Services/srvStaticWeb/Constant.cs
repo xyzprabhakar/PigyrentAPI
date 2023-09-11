@@ -1,4 +1,4 @@
-﻿namespace srvProduct
+﻿namespace srvStaticWeb
 {
     public static class Constant
     {

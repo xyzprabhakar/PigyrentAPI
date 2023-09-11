@@ -72,7 +72,7 @@ namespace srvProduct.Services
                 else
                 {
                     var existingCategory =_productContext.tblCategoryMaster.Where(p=>p.CategoryId==categoryIdGuid)
-                        .Include(p=>p.CategoryDetail).FirstOrDefault();
+                        .Include(p=>p.CategoryDetail!.Where(p=>!p.IsDeleted)).FirstOrDefault();
                     if (existingCategory == null)
                     {
                         returnData.StatusId = Constant.INVALID_ID;
@@ -201,9 +201,9 @@ namespace srvProduct.Services
                 }
                 else
                 {
-                    var existingCategory = _productContext.tblSubCategoryMaster.Where(p => p.SubCategoryId == categoryIdGuid)
-                        .Include(p => p.SubCategoryDetail!)
-                        .ThenInclude(q=>q.Properties)
+                    var existingCategory = _productContext.tblSubCategoryMaster.Where(p => p.SubCategoryId == subCategoryIdGuid)
+                        .Include(p => p.SubCategoryDetail!.Where(p=>!p.IsDeleted))
+                        .ThenInclude(q=>q.Properties.Where(p=>!p.IsDeleted))
                         .FirstOrDefault();
                     if (existingCategory == null)
                     {

@@ -1,0 +1,132 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "srvStaticWeb";
+
+package staticWeb;
+
+
+service IStaticWeb {  
+  rpc GetAboutUs (mdlAboutUsRequest) returns (mdlAboutUsList);
+  rpc SetAboutUs (mdlAboutUs) returns (mdlStaticWebSaveResponse);
+
+  rpc GetJoinUs (mdlJoinUsRequest) returns (mdlJoinUsList);
+  rpc SetJoinUs(mdlJoinUs) returns (mdlStaticWebSaveResponse);
+
+  rpc GetFAQ (mdlFAQRequest) returns (mdlFAQList);
+  rpc SetFAQ(mdlFAQ) returns (mdlStaticWebSaveResponse);
+}
+
+message mdlAboutUsRequest {
+  string name = 1;
+  bool includeDetails =2;
+  bool includeAllLanguage=3;
+  repeated string language=4;
+}
+
+
+message mdlAboutUsList
+{
+	bool status=1;
+	string message=2;	
+    int32  statusId=3;
+	repeated mdlAboutUs aboutUs=4; 
+}
+
+
+message mdlAboutUs {  
+	string aboutUsId=1;
+	string defaultName = 2;  
+	repeated mdlAboutUsDetail aboutUsDetail=3;
+	string modifiedBy=4;
+	google.protobuf.Timestamp modifiedDt = 5;
+	int32 displayOrder = 6;
+	
+}
+
+message mdlAboutUsDetail
+{
+	string aboutUsDetailId = 1;
+	string title = 2;	
+	string language=3;
+	string heading=4;
+	string details=5;
+}
+
+message mdlJoinUsRequest {
+  string name = 1;
+  bool includeDetails =2;
+  bool includeAllLanguage=3;
+  repeated string language=4;
+}
+
+
+message mdlJoinUsList
+{
+	bool status=1;
+	string message=2;	
+    int32  statusId=3;
+	repeated mdlJoinUs joinUs=4; 
+}
+
+message mdlJoinUs{  
+  string defaultName = 1;
+  string joinUsId=2;
+  repeated mdlJoinUsDetail joinUsDetail=3;
+  string modifiedBy=4;
+  google.protobuf.Timestamp modifiedDt = 5;
+  int32 displayOrder = 6;
+}
+message mdlJoinUsDetail
+{
+	string joinUsDetailId = 1;
+	string title = 2;
+	string language=3;
+	string heading=4;
+	string details=5;
+}
+
+
+message mdlFAQRequest {  
+  bool includeAllQuestion=1;
+  bool includeAllLanguage=2;
+  repeated string language=3;
+  string FAQId=4;
+}
+
+message mdlFAQList {   
+	bool status=1;
+	string message=2;	
+    int32  statusId=3;
+	repeated mdlFAQ FAQs=4;
+}
+
+message mdlFAQ{    
+  string FAQId=1;
+  int32 displayOrder = 2;
+  string defaultQuestion=3;
+  repeated mdlFAQDetail FAQDetail=4;
+  string modifiedBy=5;
+  google.protobuf.Timestamp modifiedDt = 6;
+}
+message mdlFAQDetail
+{
+	string FAQDetailId = 1;
+	string question = 2;
+	string answer = 3;
+	string language=4;	
+}
+
+message mdlStaticWebSaveResponse
+{
+	bool status=1;
+	string message=2;
+	string messageId =3;	
+    int32  statusId=4;
+}
+
+
+
+
+

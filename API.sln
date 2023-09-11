@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "srvMasters", "Services\srvM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "srvProduct", "Services\srvProduct\srvProduct.csproj", "{C187D637-EE90-4217-A58C-8FCB683FBF51}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "srvStaticWeb", "Services\srvStaticWeb\srvStaticWeb.csproj", "{6443167D-DB63-4D7E-85F9-380944B0F29C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{C187D637-EE90-4217-A58C-8FCB683FBF51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C187D637-EE90-4217-A58C-8FCB683FBF51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C187D637-EE90-4217-A58C-8FCB683FBF51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6443167D-DB63-4D7E-85F9-380944B0F29C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6443167D-DB63-4D7E-85F9-380944B0F29C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6443167D-DB63-4D7E-85F9-380944B0F29C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6443167D-DB63-4D7E-85F9-380944B0F29C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -45,6 +51,7 @@ Global
 		{74C54293-7AA7-42AA-8A5E-E5891661CA3B} = {39433DDA-C367-4FFC-ADBA-C91712E5268A}
 		{D6F88B7A-C175-4EF6-890D-52943117C2D8} = {39433DDA-C367-4FFC-ADBA-C91712E5268A}
 		{C187D637-EE90-4217-A58C-8FCB683FBF51} = {39433DDA-C367-4FFC-ADBA-C91712E5268A}
+		{6443167D-DB63-4D7E-85F9-380944B0F29C} = {39433DDA-C367-4FFC-ADBA-C91712E5268A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {02485C69-8DE0-46D4-B809-26F3455C0813}
