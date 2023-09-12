@@ -7,12 +7,20 @@
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5064;https://localhost:7012"
-    },
-    "Docker": {
-      "commandName": "Docker",
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
-      "publishAllPorts": true,
-      "useSSL": true
+    }
+    //"Docker": {
+    //  "commandName": "Docker",
+    //  "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+    //  "publishAllPorts": true,
+    //  "useSSL": true
+    //}
+  },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:61924/",
+      "sslPort": 44353
     }
   }
 }

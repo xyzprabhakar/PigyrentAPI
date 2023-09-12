@@ -235,7 +235,7 @@ namespace API.Controllers
                 }
                 else 
                 {
-                    if (!string.IsNullOrEmpty(request.Category!.CategoryId))
+                    if (!string.IsNullOrEmpty(request.Category!.CategoryId) && request.Category.CategoryId.Length != _grpcServices.Value.IdLength )
                     {
                         ModelState.AddModelError(nameof(request.Category.CategoryId), enmErrorMessage.IdentifierLength.ToString());
                     }
@@ -243,7 +243,7 @@ namespace API.Controllers
                     {
                         ModelState.AddModelError(nameof(request.Category.DefaultName), enmErrorMessage.IdentifierRequired.ToString());
                     }
-                    if (request.Category.CategoryDetail == null)
+                    if (request.Category.CategoryDetail == null || request.Category.CategoryDetail.Count==0 )
                     {
                         ModelState.AddModelError(nameof(request.Category.CategoryDetail), enmErrorMessage.IdentifierRequired.ToString());
                     }                    
@@ -282,7 +282,7 @@ namespace API.Controllers
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(request.SubCategory!.CategoryId))
+                    if (!string.IsNullOrEmpty(request.SubCategory!.CategoryId) && request.SubCategory.CategoryId.Length != _grpcServices.Value.IdLength)
                     {
                         ModelState.AddModelError(nameof(request.SubCategory.CategoryId), enmErrorMessage.IdentifierLength.ToString());
                     }

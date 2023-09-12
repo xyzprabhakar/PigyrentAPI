@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using srvStaticWeb;
 
 var builder = WebApplication.CreateBuilder(args);
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<WebContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
@@ -28,7 +29,11 @@ builder.Services.AddGrpcReflection();
 builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 
 var app = builder.Build();
-
+IWebHostEnvironment env = app.Environment;
+if (env.IsDevelopment())
+{
+    app.MapGrpcReflectionService();
+}
 // Configure the HTTP request pipeline.
 app.MapGrpcService<StaticWebService>();
 app.MapGet("/", () => "Started StaticWebService");
