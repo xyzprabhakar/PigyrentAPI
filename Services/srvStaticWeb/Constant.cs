@@ -12,6 +12,7 @@
         public const int INVALID_PARENT_ID = 1003;
         public const int INVALID_DATA = 1004;
         public const int REQUIRED = 1005;
+        public const int ALREADY_CLOSED = 1001;
         public const int INTERNAL_SERVER_ERROR = 2000;
     }
 }

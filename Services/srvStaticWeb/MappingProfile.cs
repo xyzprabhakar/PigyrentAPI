@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Google.Protobuf.WellKnownTypes;
 using srvStaticWeb.DB;
-
+using srvStaticWeb.protos;
 namespace srvStaticWeb
 {
     public class MappingProfile : Profile
@@ -27,6 +27,13 @@ namespace srvStaticWeb
 
             CreateMap<mdlFAQDetail, tblFAQDetail>().ReverseMap();
             CreateMap<mdlFAQ, tblFAQMaster>().ReverseMap();
+            CreateMap<mdlContactUs, tblContactUs>().ReverseMap();
+
+            CreateMap<mdlComplaintProcess, tblComplaintProcess>().ReverseMap();
+            CreateMap<mdlComplaint, tblComplaintMaster>().ReverseMap();
+            
+            CreateMap<mdlOfficeDetail, tblOfficeDetail>().ReverseMap();
+            CreateMap<mdlOffice, tblOffice>().ReverseMap();
         }
     }
 }

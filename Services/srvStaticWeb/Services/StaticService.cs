@@ -1,13 +1,15 @@
 using AutoMapper;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
-using srvStaticWeb;
 using srvStaticWeb.DB;
+using srvStaticWeb.protos;
 using System.Transactions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace srvStaticWeb.Services
 {
-    public class StaticWebService : IStaticWeb.IStaticWebBase 
+    public class StaticWebService : IStaticWeb.IStaticWebBase
     {
         private readonly IMapper _mapper;
         private readonly ILogger<StaticWebService> _logger;
@@ -36,7 +38,7 @@ namespace srvStaticWeb.Services
 
                     returnData.AboutUs.AddRange(
                     _mapper.Map<List<mdlAboutUs>>(
-                     _context.tblAboutUsMaster.Where(p => p.IsActive )
+                     _context.tblAboutUsMaster.Where(p => p.IsActive)
                         .Include(p => p.AboutUsDetail!.Where(q => !q.IsDeleted && (request.IncludeAllLanguage ||
                         request.Language.Contains(q.Language))))));
                 }
@@ -62,7 +64,7 @@ namespace srvStaticWeb.Services
 
                 bool isUpdate = true;
                 string aboutUsId = request.AboutUsId;
-                
+
                 Guid aboutUsIdGuid = Guid.Empty;
 
                 //validate
@@ -76,7 +78,7 @@ namespace srvStaticWeb.Services
                     returnData.Message = $"Invalid AboutUsId";
                     return Task.FromResult(returnData);
                 }
-                
+
                 else if (string.IsNullOrWhiteSpace(request.DefaultName))
                 {
                     returnData.StatusId = Constant.REQUIRED;
@@ -114,7 +116,7 @@ namespace srvStaticWeb.Services
                 else
                 {
                     var existingData = _context.tblAboutUsMaster.Where(p => p.AboutUsId == aboutUsIdGuid)
-                        .Include(p => p.AboutUsDetail!.Where(p=>!p.IsDeleted))                        
+                        .Include(p => p.AboutUsDetail!.Where(p => !p.IsDeleted))
                         .FirstOrDefault();
                     if (existingData == null)
                     {
@@ -122,15 +124,15 @@ namespace srvStaticWeb.Services
                         returnData.Message = $"Invalid aboutUsId";
                         return Task.FromResult(returnData);
                     }
-                    
+
                     foreach (var exDetail in existingData.AboutUsDetail!)
-                    {                        
-                        if (request.AboutUsDetail!.Any(q=>q.Language== exDetail.Language))
+                    {
+                        if (request.AboutUsDetail!.Any(q => q.Language == exDetail.Language))
                         {
                             exDetail.IsDeleted = true;
                             exDetail.ModifiedBy = master.ModifiedBy;
                             exDetail.ModifiedDt = master.ModifiedDt;
-                        }                        
+                        }
                     }
                     existingData.AboutUsId = master.AboutUsId;
                     existingData.ModifiedBy = master.ModifiedBy;
@@ -143,7 +145,7 @@ namespace srvStaticWeb.Services
                     foreach (var ctdetails in details!)
                     {
                         ctdetails.AboutUsDetailId = Guid.NewGuid();
-                        ctdetails.AboutUsId= master.AboutUsId;
+                        ctdetails.AboutUsId = master.AboutUsId;
                     }
                     _context.AddRange(details);
                 }
@@ -294,7 +296,7 @@ namespace srvStaticWeb.Services
                     foreach (var ctdetails in details!)
                     {
                         ctdetails.JoinUsDetailId = Guid.NewGuid();
-                        ctdetails.JoinUsId= master.JoinUsId;
+                        ctdetails.JoinUsId = master.JoinUsId;
                     }
                     _context.AddRange(details);
                 }
@@ -391,7 +393,7 @@ namespace srvStaticWeb.Services
                     return Task.FromResult(returnData);
                 }
 
-                            
+
                 if (!_context.tblFAQMaster.Where(p => p.FAQId == FAQIdGuid).Any())
                 {
                     returnData.StatusId = Constant.INVALID_ID;
@@ -473,8 +475,427 @@ namespace srvStaticWeb.Services
             return Task.FromResult(returnData);
         }
 
+        public override Task<mdlStaticWebSaveResponse> SetContactUs(mdlContactUs request, ServerCallContext context)
+        {
+            mdlStaticWebSaveResponse returnData = new mdlStaticWebSaveResponse();
+            try
+            {
 
-        
+
+                if (string.IsNullOrWhiteSpace(request.Messages))
+                {
+                    returnData.StatusId = Constant.REQUIRED;
+                    returnData.Message = $"Required {nameof(request.Messages)}";
+                    return Task.FromResult(returnData);
+                }
+                if (string.IsNullOrWhiteSpace(request.Name))
+                {
+                    returnData.StatusId = Constant.REQUIRED;
+                    returnData.Message = $"Required {nameof(request.Name)}";
+                    return Task.FromResult(returnData);
+                }
+                if (string.IsNullOrWhiteSpace(request.Subject))
+                {
+                    returnData.StatusId = Constant.REQUIRED;
+                    returnData.Message = $"Required {nameof(request.Subject)}";
+                    return Task.FromResult(returnData);
+                }
+                if (string.IsNullOrWhiteSpace(request.Email))
+                {
+                    returnData.StatusId = Constant.REQUIRED;
+                    returnData.Message = $"Required {nameof(request.Email)}";
+                    return Task.FromResult(returnData);
+                }
+
+                var master = _mapper.Map<tblContactUs>(request);
+                _context.tblContactUs.Add(master);
+                _context.SaveChanges();
+                returnData.Status = true;
+                returnData.Message = $"Inserted successfully";
+                returnData.StatusId = Constant.INSERT_SUCCESSFULLY;
+                returnData.MessageId = master.ContactUsId.ToString("N");
+
+            }
+            catch (Exception ex)
+            {
+                returnData.Message = ex.Message;
+                returnData.StatusId = Constant.INTERNAL_SERVER_ERROR;
+                _logger.LogError(ex, "Error: StaticWebService.SetContactUs() " + ex.Message);
+            }
+            return Task.FromResult(returnData);
+        }
+
+        public override Task<mdlContactUsList> GetContactUs(mdlContactUsRequest request, ServerCallContext context)
+        {
+            mdlContactUsList returnData = new mdlContactUsList() { ContactUs = { } };
+            try
+            {
+
+                using (var scope = new TransactionScope(TransactionScopeOption.Required,
+                        new System.Transactions.TransactionOptions()
+                        {
+                            IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
+                        }))
+                {
+
+                    var fromDt = request.FromDt.ToDateTime();
+                    var toDt = request.ToDt.ToDateTime();
+
+                    returnData.ContactUs.AddRange(
+                    _mapper.Map<List<mdlContactUs>>(
+                     _context.tblContactUs.Where(p => p.ModifiedDt >= fromDt && p.ModifiedDt <= toDt)));
+                }
+
+                returnData.Status = true;
+                returnData.StatusId = Constant.LOADED;
+
+            }
+            catch (Exception ex)
+            {
+                returnData.StatusId = Constant.INTERNAL_SERVER_ERROR;
+                returnData.Message = ex.Message;
+                _logger.LogError(ex, "Error: StaticWebService.GetContactUs() " + ex.Message);
+            }
+            return Task.FromResult(returnData);
+        }
+
+
+        public override Task<mdlStaticWebSaveResponse> SetComplaint(mdlComplaint request, ServerCallContext context)
+        {
+            mdlStaticWebSaveResponse returnData = new mdlStaticWebSaveResponse();
+            try
+            {
+
+
+                if (string.IsNullOrWhiteSpace(request.Messages))
+                {
+                    returnData.StatusId = Constant.REQUIRED;
+                    returnData.Message = $"Required {nameof(request.Messages)}";
+                    return Task.FromResult(returnData);
+                }
+                if (string.IsNullOrWhiteSpace(request.Name))
+                {
+                    returnData.StatusId = Constant.REQUIRED;
+                    returnData.Message = $"Required {nameof(request.Name)}";
+                    return Task.FromResult(returnData);
+                }
+                if (string.IsNullOrWhiteSpace(request.Subject))
+                {
+                    returnData.StatusId = Constant.REQUIRED;
+                    returnData.Message = $"Required {nameof(request.Subject)}";
+                    return Task.FromResult(returnData);
+                }
+                if (string.IsNullOrWhiteSpace(request.Email))
+                {
+                    returnData.StatusId = Constant.REQUIRED;
+                    returnData.Message = $"Required {nameof(request.Email)}";
+                    return Task.FromResult(returnData);
+                }
+
+                var master = _mapper.Map<tblComplaintMaster>(request);
+                _context.tblComplaintMaster.Add(master);
+                _context.SaveChanges();
+                returnData.Status = true;
+                returnData.Message = $"Inserted successfully";
+                returnData.StatusId = Constant.INSERT_SUCCESSFULLY;
+                returnData.MessageId = master.ComplaintId.ToString("N");
+
+            }
+            catch (Exception ex)
+            {
+                returnData.Message = ex.Message;
+                returnData.StatusId = Constant.INTERNAL_SERVER_ERROR;
+                _logger.LogError(ex, "Error: StaticWebService.SetComplaint() " + ex.Message);
+            }
+            return Task.FromResult(returnData);
+        }
+
+
+        public override Task<mdlComplaintList> GetComplaint(mdlComplaintRequest request, ServerCallContext context)
+        {
+            mdlComplaintList returnData = new mdlComplaintList() { Complaint = { } };
+            try
+            {
+
+                using (var scope = new TransactionScope(TransactionScopeOption.Required,
+                        new System.Transactions.TransactionOptions()
+                        {
+                            IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
+                        }))
+                {
+
+                    if (!string.IsNullOrWhiteSpace(request.ComplaintId))
+                    {
+                        Guid ComplaintIdGuid = Guid.Empty;
+                        //validate
+                        if (!Guid.TryParse(request.ComplaintId, out ComplaintIdGuid))
+                        {
+                            returnData.StatusId = Constant.INVALID_ID;
+                            returnData.Message = $"Invalid ComplaintId";
+                            return Task.FromResult(returnData);
+                        }
+                        else
+                        {
+                            returnData.Complaint.AddRange(
+                            _mapper.Map<List<mdlComplaint>>(
+                             _context.tblComplaintMaster
+                             .Where(p => p.ComplaintId == ComplaintIdGuid && !p.IsDeleted)
+                             .Include(q => q.ComplaintProcess)
+                             )
+                            );
+                        }
+                    }
+                    else if (!string.IsNullOrWhiteSpace(request.ComplaintNo))
+                    {
+                        returnData.Complaint.AddRange(
+                            _mapper.Map<List<mdlComplaint>>(
+                             _context.tblComplaintMaster
+                             .Where(p => p.ComplaintNo == request.ComplaintNo && !p.IsDeleted)
+                             .Include(q => q.ComplaintProcess)
+                             )
+                            );
+                    }
+                    else if (!string.IsNullOrWhiteSpace(request.Email))
+                    {
+                        returnData.Complaint.AddRange(
+                            _mapper.Map<List<mdlComplaint>>(
+                             _context.tblComplaintMaster
+                             .Where(p => p.Email == request.Email && !p.IsDeleted)
+                             .Include(q => q.ComplaintProcess)
+                             )
+                            );
+                    }
+                    else
+                    {
+                        var fromDt = request.FromDt.ToDateTime();
+                        var toDt = request.ToDt.ToDateTime();
+                        var Query = (request.ComplainType == enmComplainType.None) ?
+                        _context.tblComplaintMaster
+                        .Where(p => p.ModifiedDt >= fromDt && p.ModifiedDt <= toDt && p.IsDeleted) :
+                        _context.tblComplaintMaster
+                        .Where(p => p.ModifiedDt >= fromDt && p.ModifiedDt <= toDt && p.IsDeleted && p.ComplaintType == request.ComplainType);
+
+                        returnData.Complaint.AddRange(_mapper.Map<List<mdlComplaint>>(Query));
+                    }                        
+                }
+                returnData.Status = true;
+                returnData.StatusId = Constant.LOADED;
+
+            }
+            catch (Exception ex)
+            {
+                returnData.StatusId = Constant.INTERNAL_SERVER_ERROR;
+                returnData.Message = ex.Message;
+                _logger.LogError(ex, "Error: StaticWebService.GetComplaint() " + ex.Message);
+            }
+            return Task.FromResult(returnData);
+        }
+
+        public override Task<mdlStaticWebSaveResponse> ProcessComplaint(mdlComplaintProcess request, ServerCallContext context)
+        {
+            mdlStaticWebSaveResponse returnData = new mdlStaticWebSaveResponse();
+            try
+            {
+
+
+                if (string.IsNullOrWhiteSpace(request.ComplaintId))
+                {
+                    returnData.StatusId = Constant.REQUIRED;
+                    returnData.Message = $"Required {nameof(request.ComplaintId)}";
+                    return Task.FromResult(returnData);
+                }
+
+                Guid ComplaintIdGuid = Guid.Empty;
+                //validate
+                if (!Guid.TryParse(request.ComplaintId, out ComplaintIdGuid))
+                {
+                    returnData.StatusId = Constant.INVALID_ID;
+                    returnData.Message = $"Invalid ComplaintId";
+                    return Task.FromResult(returnData);
+                }
+
+                var existingData= _context.tblComplaintMaster.Where(p => p.ComplaintId == ComplaintIdGuid && !p.IsDeleted).FirstOrDefault();
+                if (existingData == null)
+                {
+                    returnData.StatusId = Constant.INVALID_ID;
+                    returnData.Message = $"Invalid ComplaintId";
+                    return Task.FromResult(returnData);
+                }
+                else if (existingData.ComplaintStatus == enmComplaintStatus.Resolve)
+                {
+                    returnData.StatusId = Constant.ALREADY_CLOSED;
+                    returnData.Message = $"Already Resolved";
+                    return Task.FromResult(returnData);
+                }
+
+                var master = _mapper.Map<tblComplaintProcess>(request);
+                _context.tblComplaintProcess.Add(master);
+                existingData.ComplaintStatus = master.ComplaintStatus;
+                _context.tblComplaintMaster.Update(existingData);
+                _context.SaveChanges();
+                returnData.Status = true;
+                returnData.Message = $"Save successfully";
+                returnData.StatusId = Constant.SAVE_SUCCESSFULLY;
+                returnData.MessageId = master.ComplaintProcessId.ToString("N");
+
+            }
+            catch (Exception ex)
+            {
+                returnData.Message = ex.Message;
+                returnData.StatusId = Constant.INTERNAL_SERVER_ERROR;
+                _logger.LogError(ex, "Error: StaticWebService.ProcessComplaint() " + ex.Message);
+            }
+            return Task.FromResult(returnData);
+        }
+
+        public override Task<mdlOfficeList> GetOffice(mdlOfficeRequest request, ServerCallContext context)
+        {
+            mdlOfficeList returnData = new mdlOfficeList() { Office = { } };
+            try
+            {
+
+                using (var scope = new TransactionScope(TransactionScopeOption.Required,
+                        new System.Transactions.TransactionOptions()
+                        {
+                            IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
+                        }))
+                {
+
+                    returnData.Office.AddRange(
+                    _mapper.Map<List<mdlOffice>>(
+                     _context.tblOffice.Where(p => p.IsActive)
+                        .Include(p => p.OfficeDetail!.Where(q => !q.IsDeleted && (request.IncludeAllLanguage ||
+                        request.Language.Contains(q.Language))))));
+                }
+
+                returnData.Status = true;
+                returnData.StatusId = Constant.LOADED;
+
+            }
+            catch (Exception ex)
+            {
+                returnData.StatusId = Constant.INTERNAL_SERVER_ERROR;
+                returnData.Message = ex.Message;
+                _logger.LogError(ex, "Error: StaticWebService.GetOffice() " + ex.Message);
+            }
+            return Task.FromResult(returnData);
+        }
+
+        public override Task<mdlStaticWebSaveResponse> SetOffice(mdlOffice request, ServerCallContext context)
+        {
+            mdlStaticWebSaveResponse returnData = new mdlStaticWebSaveResponse();
+            try
+            {
+
+                bool isUpdate = true;
+                string officeId = request.OfficeId;
+
+                Guid officeIdGuid = Guid.Empty;
+                //validate
+                if (string.IsNullOrEmpty(officeId))
+                {
+                    isUpdate = false;
+                }
+                if (!Guid.TryParse(officeId, out officeIdGuid))
+                {
+                    returnData.StatusId = Constant.INVALID_ID;
+                    returnData.Message = $"Invalid JoinUsId";
+                    return Task.FromResult(returnData);
+                }
+                else if (string.IsNullOrWhiteSpace(request.DefaultLocation))
+                {
+                    returnData.StatusId = Constant.REQUIRED;
+                    returnData.Message = $"Required {nameof(request.DefaultLocation)}";
+                    return Task.FromResult(returnData);
+                }
+                if ((request.OfficeDetail?.Count ?? 0) == 0)
+                {
+                    returnData.StatusId = Constant.REQUIRED;
+                    returnData.Message = $"Required {nameof(request.OfficeDetail)}";
+                    return Task.FromResult(returnData);
+                }
+
+
+                if (!_context.tblOffice.Where(p => p.OfficeId == officeIdGuid).Any())
+                {
+                    returnData.StatusId = Constant.INVALID_ID;
+                    returnData.Message = $"Invalid officeId";
+                    return Task.FromResult(returnData);
+                }
+                if (_context.tblOffice.Where(p => p.DefaultLocation == request.DefaultLocation && p.OfficeId != officeIdGuid).Any())
+                {
+                    returnData.StatusId = Constant.ALREADY_EXIST;
+                    returnData.Message = $"Already exists {request.DefaultLocation}";
+                    return Task.FromResult(returnData);
+                }
+
+                var master = _mapper.Map<tblOffice>(request);
+                if (!isUpdate)
+                {
+                    _context.tblOffice.Add(master);
+                    officeIdGuid = master.OfficeId;
+                }
+                else
+                {
+                    var existingData = _context.tblOffice.Where(p => p.OfficeId == officeIdGuid)
+                        .Include(p => p.OfficeDetail!.Where(p => !p.IsDeleted))
+                        .FirstOrDefault();
+                    if (existingData == null)
+                    {
+                        returnData.StatusId = Constant.INVALID_ID;
+                        returnData.Message = $"Invalid FAQId";
+                        return Task.FromResult(returnData);
+                    }
+
+                    foreach (var exDetail in existingData.OfficeDetail!)
+                    {
+                        if (request.OfficeDetail!.Any(q => q.Language == exDetail.Language))
+                        {
+                            exDetail.IsDeleted = true;
+                            exDetail.ModifiedBy = master.ModifiedBy;
+                            exDetail.ModifiedDt = master.ModifiedDt;
+                        }
+                    }
+                    existingData.OfficeId = master.OfficeId;
+                    existingData.ModifiedBy = master.ModifiedBy;
+                    existingData.ModifiedDt = master.ModifiedDt;
+                    existingData.DefaultLocation = master.DefaultLocation;
+                    existingData.IsActive = master.IsActive;
+                    existingData.IsHeadOffice = master.IsHeadOffice;
+
+                    _context.Update(existingData);
+                    var details = master.OfficeDetail;
+                    foreach (var ctdetails in details!)
+                    {
+                        ctdetails.OfficeDetailId = Guid.NewGuid();
+                        ctdetails.OfficeId = master.OfficeId;
+                    }
+                    _context.AddRange(details);
+                }
+                _context.SaveChanges();
+                officeId = officeIdGuid.ToString("N");
+                if (!isUpdate)
+                {
+                    returnData.Message = $"Inserted successfully";
+                    returnData.StatusId = Constant.INSERT_SUCCESSFULLY;
+                    returnData.MessageId = officeId;
+                }
+                else
+                {
+                    returnData.StatusId = Constant.UPDATED_SUCCESSFULLY;
+                    returnData.Message = $"Updated successfully";
+                    returnData.MessageId = officeId;
+                }
+                returnData.Status = true;
+            }
+            catch (Exception ex)
+            {
+                returnData.Message = ex.Message;
+                returnData.StatusId = Constant.INTERNAL_SERVER_ERROR;
+                _logger.LogError(ex, "Error: StaticWebService.SetJoinUs() " + ex.Message);
+            }
+            return Task.FromResult(returnData);
+        }
 
     }
 }

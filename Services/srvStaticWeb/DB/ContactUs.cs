@@ -24,6 +24,8 @@ namespace srvStaticWeb.DB
         public Guid OfficeId { get; set; }
         public bool IsActive { get; set; }
         public bool IsHeadOffice { get; set; }
+        [MaxLength(32)]
+        public string DefaultLocation { get; set; } = null!;
         public virtual ICollection<tblOfficeDetail>? OfficeDetail { get; set; }
     }
     public class tblOfficeDetail : clsModifiedBy
