@@ -7,6 +7,10 @@ using API.Models;
 using System.ServiceModel.Channels;
 using srvMasters.protos;
 using srvProduct.protos;
+using AutoMapper;
+using System.Collections.Generic;
+using API.Classes;
+using System.Reflection.PortableExecutable;
 
 namespace API.Controllers
 {
@@ -14,13 +18,15 @@ namespace API.Controllers
     [Route("[controller]")]
     public class ProductController : ControllerBase
     {
-
+        private readonly IMapper _mapper;
         private readonly ILogger<ProductController> _logger;
         private readonly IOptions<GRPCServices> _grpcServices;
         private readonly IOptions<ApiBehaviorOptions> _apiBehaviorOptions;
 
-        public ProductController(IOptions<GRPCServices> grpcServices, ILogger<ProductController> logger, IOptions<ApiBehaviorOptions> apiBehaviorOptions)
+        public ProductController(IOptions<GRPCServices> grpcServices, ILogger<ProductController> logger, 
+            IOptions<ApiBehaviorOptions> apiBehaviorOptions, IMapper mapper)
         {
+            _mapper = mapper;
             _grpcServices = grpcServices;
             _logger = logger;
             _apiBehaviorOptions = apiBehaviorOptions;
@@ -224,36 +230,33 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("SaveCategory")]
-        public async Task<IActionResult> SaveCategory([FromBody] mdlCategoryWrapper request)
+        public async Task<IActionResult> SaveCategory([FromBody] dtoCategory request, [FromHeader]dtoHeaders header)
         {
             mdlCategorySaveResponse returnData = new mdlCategorySaveResponse();
             try
-            {
-                if (request.Category == null)
+            { 
+                if (!string.IsNullOrEmpty(request.CategoryId) && request.CategoryId.Length != _grpcServices.Value.IdLength)
                 {
-                    ModelState.AddModelError(nameof(request.Category), enmErrorMessage.IdentifierRequired.ToString());
+                    ModelState.AddModelError(nameof(request.CategoryId), enmErrorMessage.IdentifierLength.ToString());
                 }
-                else 
+                if (string.IsNullOrWhiteSpace(request.DefaultName))
                 {
-                    if (!string.IsNullOrEmpty(request.Category!.CategoryId) && request.Category.CategoryId.Length != _grpcServices.Value.IdLength )
-                    {
-                        ModelState.AddModelError(nameof(request.Category.CategoryId), enmErrorMessage.IdentifierLength.ToString());
-                    }
-                    if (string.IsNullOrWhiteSpace(request.Category.DefaultName))
-                    {
-                        ModelState.AddModelError(nameof(request.Category.DefaultName), enmErrorMessage.IdentifierRequired.ToString());
-                    }
-                    if (request.Category.CategoryDetail == null || request.Category.CategoryDetail.Count==0 )
-                    {
-                        ModelState.AddModelError(nameof(request.Category.CategoryDetail), enmErrorMessage.IdentifierRequired.ToString());
-                    }                    
+                    ModelState.AddModelError(nameof(request.DefaultName), enmErrorMessage.IdentifierRequired.ToString());
                 }
+                if (request.CategoryDetail == null || request.CategoryDetail.Count == 0)
+                {
+                    ModelState.AddModelError(nameof(request.CategoryDetail), enmErrorMessage.IdentifierRequired.ToString());
+                }
+                mdlCategoryWrapper model = new mdlCategoryWrapper();                
+                var sData = _mapper.Map<mdlCategory>(request);
+                model.Category = sData;
+                Headers.BindLanguage(header, model);
                 
                 if (ModelState.IsValid)
                 {
                     using var channel = GrpcChannel.ForAddress(_grpcServices.Value.ProductServices);
                     var client = new ICategoryService.ICategoryServiceClient(channel);
-                    returnData = await client.SaveCategoryAsync(request);
+                    returnData = await client.SaveCategoryAsync(model);
                 }
                 else
                 {
@@ -271,36 +274,34 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("SaveSubCategory")]
-        public async Task<IActionResult> SaveSubCategory([FromBody] mdlSubCategoryWrapper request)
+        public async Task<IActionResult> SaveSubCategory([FromBody] dtoSubCategory request, [FromHeader] dtoHeaders header)
         {
             mdlCategorySaveResponse returnData = new mdlCategorySaveResponse();
             try
             {
-                if (request.SubCategory == null)
+
+                if (!string.IsNullOrEmpty(request.CategoryId) && request.CategoryId.Length != _grpcServices.Value.IdLength)
                 {
-                    ModelState.AddModelError(nameof(request.SubCategory), enmErrorMessage.IdentifierRequired.ToString());
+                    ModelState.AddModelError(nameof(request.CategoryId), enmErrorMessage.IdentifierLength.ToString());
                 }
-                else
+                if (string.IsNullOrWhiteSpace(request.DefaultName))
                 {
-                    if (!string.IsNullOrEmpty(request.SubCategory!.CategoryId) && request.SubCategory.CategoryId.Length != _grpcServices.Value.IdLength)
-                    {
-                        ModelState.AddModelError(nameof(request.SubCategory.CategoryId), enmErrorMessage.IdentifierLength.ToString());
-                    }
-                    if (string.IsNullOrWhiteSpace(request.SubCategory.DefaultName))
-                    {
-                        ModelState.AddModelError(nameof(request.SubCategory.DefaultName), enmErrorMessage.IdentifierRequired.ToString());
-                    }
-                    if (request.SubCategory.SubCategoryDetail == null)
-                    {
-                        ModelState.AddModelError(nameof(request.SubCategory.SubCategoryDetail), enmErrorMessage.IdentifierRequired.ToString());
-                    }
+                    ModelState.AddModelError(nameof(request.DefaultName), enmErrorMessage.IdentifierRequired.ToString());
                 }
+                if (request.SubCategoryDetail == null)
+                {
+                    ModelState.AddModelError(nameof(request.SubCategoryDetail), enmErrorMessage.IdentifierRequired.ToString());
+                }
+                mdlSubCategoryWrapper model = new mdlSubCategoryWrapper();
+                var sData = _mapper.Map<mdlSubCategory>(request);
+                model.SubCategory = sData;
+                Headers.BindLanguage(header, model);
 
                 if (ModelState.IsValid)
                 {
                     using var channel = GrpcChannel.ForAddress(_grpcServices.Value.ProductServices);
                     var client = new ICategoryService.ICategoryServiceClient(channel);
-                    returnData = await client.SaveSubCategoryAsync(request);
+                    returnData = await client.SaveSubCategoryAsync(model);
                 }
                 else
                 {
@@ -311,7 +312,7 @@ namespace API.Controllers
             catch (Exception ex)
             {
                 returnData.Message = ex.Message;
-                _logger.LogError(ex, "Error: MasterController.SaveCategory() " + ex.Message);
+                _logger.LogError(ex, "Error: MasterController.SaveSubCategory() " + ex.Message);
             }
             return Ok(returnData);
         }

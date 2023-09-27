@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="Google.Protobuf" Version="3.23.2" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.49.0" />
     <PackageReference Include="Grpc.Net.Client" Version="2.53.0" />
@@ -37,8 +38,12 @@
       <Link>Protos\category.proto</Link>
     </Protobuf>
     <Protobuf Include="..\Services\srvStaticWeb\Protos\staticWeb.proto" GrpcServices="Client">
-      <Link>Protos\category.proto</Link>
+      <Link>Protos\staticWeb.proto</Link>
     </Protobuf>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Classes\" />
   </ItemGroup>
 
 </Project>

@@ -68,12 +68,12 @@ message mdlSubCategoryDetails
 
 
 message mdlProperty{
-	int32 PropertyDisplayOrder=1;
+	int32 propertyDisplayOrder=1;
 	string name = 2;
 	enmPropertyType type = 3;
 	int32 minLength = 4;
 	int32 maxLength = 5;	
-	string regx = 6;
+	google.protobuf.StringValue regx = 6;
     repeated string option=7;
 }
 
@@ -135,20 +135,17 @@ message mdlSubCategoryList {
 }
 
 
-
-
-
 message mdlCategoryWrapper
 {
     mdlCategory category=1;
-    bool allLanguage=2;
+    bool includeAllLanguage=2;
     repeated string language=3;
 }
 
 message mdlSubCategoryWrapper
 {
     mdlSubCategory subCategory=1;
-    bool allLanguage=2;
+    bool includeAllLanguage=2;
     repeated string language=3;
 }
 

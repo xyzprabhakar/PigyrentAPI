@@ -1,4 +1,5 @@
 ﻿using API.Models;
+using AutoMapper;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,15 +13,17 @@ namespace API.Controllers
     [ApiController]
     public class StaticWebController : ControllerBase
     {
+        private readonly IMapper _mapper;
         private readonly ILogger<StaticWebController> _logger;
         private readonly IOptions<GRPCServices> _grpcServices;
         private readonly IOptions<ApiBehaviorOptions> _apiBehaviorOptions;
 
-        public StaticWebController(IOptions<GRPCServices> grpcServices, ILogger<StaticWebController> logger, IOptions<ApiBehaviorOptions> apiBehaviorOptions)
+        public StaticWebController(IOptions<GRPCServices> grpcServices, ILogger<StaticWebController> logger, IOptions<ApiBehaviorOptions> apiBehaviorOptions, IMapper mapper)
         {
             _grpcServices = grpcServices;
             _logger = logger;
             _apiBehaviorOptions = apiBehaviorOptions;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -180,7 +183,7 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("SaveAboutUs")]
-        public async Task<IActionResult> SaveAboutUs([FromBody] mdlAboutUs request)
+        public async Task<IActionResult> SaveAboutUs([FromBody] dtoAboutUs request)
         {
             mdlStaticWebSaveResponse returnData = new mdlStaticWebSaveResponse();
             try
@@ -200,9 +203,10 @@ namespace API.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    mdlAboutUs model = _mapper.Map<mdlAboutUs>(request);
                     using var channel = GrpcChannel.ForAddress(_grpcServices.Value.ProductServices);
                     var client = new IStaticWeb.IStaticWebClient(channel);
-                    returnData = await client.SetAboutUsAsync(request);
+                    returnData = await client.SetAboutUsAsync(model);
                 }
                 else
                 {
@@ -213,14 +217,14 @@ namespace API.Controllers
             catch (Exception ex)
             {
                 returnData.Message = ex.Message;
-                _logger.LogError(ex, "Error: StaticWebController.SaveAboutUs() " + ex.Message);
+                _logger.LogError(ex, "Error: StaticWebController.SaveAboutUs()" + ex.Message);
             }
             return Ok(returnData);
         }
 
         [HttpPost]
         [Route("SaveJoinUs")]
-        public async Task<IActionResult> SaveJoinUs([FromBody] mdlJoinUs request)
+        public async Task<IActionResult> SaveJoinUs([FromBody] dtoJoinUs request)
         {
             mdlStaticWebSaveResponse returnData = new mdlStaticWebSaveResponse();
             try
@@ -242,7 +246,7 @@ namespace API.Controllers
                 {
                     using var channel = GrpcChannel.ForAddress(_grpcServices.Value.ProductServices);
                     var client = new IStaticWeb.IStaticWebClient(channel);
-                    returnData = await client.SetJoinUsAsync(request);
+                    returnData = await client.SetJoinUsAsync(_mapper.Map<mdlJoinUs>( request));
                 }
                 else
                 {
@@ -260,7 +264,7 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("SaveFAQ")]
-        public async Task<IActionResult> SaveFAQ([FromBody] mdlFAQ request)
+        public async Task<IActionResult> SaveFAQ([FromBody] dtoFAQ request)
         {
             mdlStaticWebSaveResponse returnData = new mdlStaticWebSaveResponse();
             try
@@ -280,9 +284,10 @@ namespace API.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    
                     using var channel = GrpcChannel.ForAddress(_grpcServices.Value.ProductServices);
                     var client = new IStaticWeb.IStaticWebClient(channel);
-                    returnData = await client.SetFAQAsync(request);
+                    returnData = await client.SetFAQAsync(_mapper.Map<mdlFAQ>( request));
                 }
                 else
                 {
@@ -301,7 +306,7 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("SaveOffice")]
-        public async Task<IActionResult> SaveOffice([FromBody] mdlOffice request)
+        public async Task<IActionResult> SaveOffice([FromBody] dtoOffice request)
         {
             mdlStaticWebSaveResponse returnData = new mdlStaticWebSaveResponse();
             try
@@ -320,10 +325,11 @@ namespace API.Controllers
                 }
 
                 if (ModelState.IsValid)
-                {
+                {                   
                     using var channel = GrpcChannel.ForAddress(_grpcServices.Value.ProductServices);
                     var client = new IStaticWeb.IStaticWebClient(channel);
-                    returnData = await client.SetOfficeAsync(request);
+                    returnData = await client.SetOfficeAsync(_mapper.Map<mdlOffice>(request));
+                    
                 }
                 else
                 {

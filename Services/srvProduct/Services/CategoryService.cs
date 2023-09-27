@@ -81,7 +81,7 @@ namespace srvProduct.Services
                     }
                     foreach (var exCategory in existingCategory.CategoryDetail!)
                     {
-                        if (request.AllLanguage)
+                        if (request.IncludeAllLanguage)
                         {
                             exCategory.IsDeleted = true;
                             exCategory.ModifiedBy= ctMaster.ModifiedBy;
@@ -100,7 +100,7 @@ namespace srvProduct.Services
                     existingCategory.IsActive = ctMaster.IsActive;
                     existingCategory.ImageUrl = ctMaster.ImageUrl;
                     _productContext.Update(existingCategory);
-                    var categoryDetails=ctMaster.CategoryDetail!.Where(p=> request.AllLanguage || request.Language.Contains(p.Language, StringComparer.OrdinalIgnoreCase));
+                    var categoryDetails=ctMaster.CategoryDetail!.Where(p=> request.IncludeAllLanguage || request.Language.Contains(p.Language, StringComparer.OrdinalIgnoreCase));
                     foreach (var ctdetails in categoryDetails)
                     {
                         ctdetails.CategoryDetailId = Guid.NewGuid();
@@ -215,7 +215,7 @@ namespace srvProduct.Services
                     foreach (var exCategory in existingCategory.SubCategoryDetail!)
                     {
                         Isdeleted = false;
-                        if (request.AllLanguage)
+                        if (request.IncludeAllLanguage)
                         {
                             exCategory.IsDeleted = true;
                             Isdeleted = true;
@@ -247,7 +247,7 @@ namespace srvProduct.Services
                     existingCategory.IsActive = ctMaster.IsActive;
                     existingCategory.ImageUrl = ctMaster.ImageUrl;
                     _productContext.Update(existingCategory);
-                    var details = ctMaster.SubCategoryDetail!.Where(p => request.AllLanguage || request.Language.Contains(p.Language, StringComparer.OrdinalIgnoreCase));
+                    var details = ctMaster.SubCategoryDetail!.Where(p => request.IncludeAllLanguage || request.Language.Contains(p.Language, StringComparer.OrdinalIgnoreCase));
                     foreach (var ctdetails in details)
                     {
                         ctdetails.SubCategoryDetailId = Guid.NewGuid();
