@@ -3,7 +3,7 @@ using System;
 
 namespace API.Models
 {
-    
+ 
     public class dtoCategory
     {
         public string? CategoryId { get; set; }

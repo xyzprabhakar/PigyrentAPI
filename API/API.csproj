@@ -28,21 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="..\Services\srvMasters\Protos\countryState.proto" GrpcServices="Client">
-      <Link>Protos\countryState.proto</Link>
-    </Protobuf>
-    <Protobuf Include="..\Services\srvMasters\Protos\currency.proto" GrpcServices="Client">
-      <Link>Protos\currency.proto</Link>
-    </Protobuf>
-    <Protobuf Include="..\Services\srvProduct\Protos\category.proto" GrpcServices="Client">
-      <Link>Protos\category.proto</Link>
-    </Protobuf>
-    <Protobuf Include="..\Services\srvStaticWeb\Protos\staticWeb.proto" GrpcServices="Client">
-      <Link>Protos\staticWeb.proto</Link>
-    </Protobuf>
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Classes\" />
   </ItemGroup>
 

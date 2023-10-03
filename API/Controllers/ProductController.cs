@@ -35,7 +35,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("GetCategoryByName")]
-        public async Task<IActionResult> GetCategoryByName([FromQuery] mdlCategoryNameRequest request)
+        public async Task<IActionResult> GetCategoryByName([FromQuery] mdlCategoryNameRequest request, [FromHeader] dtoHeaders header)
         {
             mdlCategoryList returnList = new mdlCategoryList();
             try
@@ -46,6 +46,7 @@ namespace API.Controllers
                 }
                 if (ModelState.IsValid)
                 {
+                    Headers.BindLanguage(header, request);
                     using var channel = GrpcChannel.ForAddress(_grpcServices.Value.ProductServices);
                     var client = new ICategoryService.ICategoryServiceClient(channel);
                     returnList = await client.GetCategoryByNameAsync(request);
