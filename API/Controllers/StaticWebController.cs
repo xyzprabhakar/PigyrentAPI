@@ -4,9 +4,8 @@ using Grpc.Net.Client;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using srvProduct.protos;
-using srvStaticWeb.protos;
 
+#if (false)
 namespace API.Controllers
 {
     [Route("api/[controller]")]
@@ -437,3 +436,6 @@ namespace API.Controllers
 
     }
 }
+
+
+#endif

@@ -5,12 +5,11 @@ using ProtoBuf.Grpc.Client;
 using Microsoft.Extensions.Options;
 using API.Models;
 using System.ServiceModel.Channels;
-using srvMasters.protos;
-using srvProduct.protos;
 using AutoMapper;
 using System.Collections.Generic;
 using API.Classes;
 using System.Reflection.PortableExecutable;
+using ProductServices;
 
 namespace API.Controllers
 {
@@ -247,17 +246,13 @@ namespace API.Controllers
                 if (request.CategoryDetail == null || request.CategoryDetail.Count == 0)
                 {
                     ModelState.AddModelError(nameof(request.CategoryDetail), enmErrorMessage.IdentifierRequired.ToString());
-                }
-                mdlCategoryWrapper model = new mdlCategoryWrapper();                
-                var sData = _mapper.Map<mdlCategory>(request);
-                model.Category = sData;
-                Headers.BindLanguage(header, model);
-                
+                }                
+                var sData = _mapper.Map<mdlCategory>(request);                
                 if (ModelState.IsValid)
                 {
                     using var channel = GrpcChannel.ForAddress(_grpcServices.Value.ProductServices);
                     var client = new ICategoryService.ICategoryServiceClient(channel);
-                    returnData = await client.SaveCategoryAsync(model);
+                    returnData = await client.SaveCategoryAsync(sData);
                 }
                 else
                 {
@@ -293,16 +288,13 @@ namespace API.Controllers
                 {
                     ModelState.AddModelError(nameof(request.SubCategoryDetail), enmErrorMessage.IdentifierRequired.ToString());
                 }
-                mdlSubCategoryWrapper model = new mdlSubCategoryWrapper();
+                
                 var sData = _mapper.Map<mdlSubCategory>(request);
-                model.SubCategory = sData;
-                Headers.BindLanguage(header, model);
-
                 if (ModelState.IsValid)
                 {
                     using var channel = GrpcChannel.ForAddress(_grpcServices.Value.ProductServices);
                     var client = new ICategoryService.ICategoryServiceClient(channel);
-                    returnData = await client.SaveSubCategoryAsync(model);
+                    returnData = await client.SaveSubCategoryAsync(sData);
                 }
                 else
                 {

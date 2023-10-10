@@ -1,0 +1,314 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "StaticContentServices";
+
+package staticWeb;;
+
+service IStaticWeb {  
+  rpc GetAboutUs (mdlAboutUsRequest) returns (mdlAboutUsList);
+  rpc SetAboutUs (mdlAboutUs) returns (mdlStaticWebSaveResponse);
+
+  rpc GetJoinUs (mdlJoinUsRequest) returns (mdlJoinUsList);
+  rpc SetJoinUs(mdlJoinUs) returns (mdlStaticWebSaveResponse);
+
+  rpc GetFAQ (mdlFAQRequest) returns (mdlFAQList);
+  rpc SetFAQ(mdlFAQ) returns (mdlStaticWebSaveResponse);
+
+
+  rpc GetOffice (mdlOfficeRequest) returns (mdlOfficeList);
+  rpc SetOffice(mdlOffice) returns (mdlStaticWebSaveResponse);
+
+  rpc GetContactUs(mdlContactUsRequest) returns (mdlContactUsList);
+  rpc SetContactUs(mdlContactUs) returns (mdlStaticWebSaveResponse);
+
+  rpc GetComplaint(mdlComplaintRequest) returns (mdlComplaintList);
+  rpc SetComplaint(mdlComplaint) returns (mdlStaticWebSaveResponse);
+  rpc ProcessComplaint(mdlComplaintProcessWrapper) returns (mdlStaticWebSaveResponse);
+
+  rpc GetLabel (mdlLabelRequest) returns (mdlLabelList);
+  rpc SetLabel (mdlLabel) returns (mdlStaticWebSaveResponse);
+
+}
+
+message mdlAboutUsRequest {
+  string aboutUsId=1;
+  string name = 2;
+  bool includeDetails =3;
+  bool includeAllLanguage=4;
+  repeated string language=5;
+}
+
+
+message mdlAboutUsList
+{
+	bool status=1;
+	string message=2;	
+    int32  statusId=3;
+	repeated mdlAboutUs aboutUs=4; 
+}
+
+
+message mdlAboutUs {  
+	string aboutUsId=1;
+	string defaultName = 2;  
+	repeated mdlAboutUsDetail aboutUsDetail=3;
+	string modifiedBy=4;
+	google.protobuf.Timestamp modifiedDt = 5;
+	int32 displayOrder = 6;
+	
+}
+
+message mdlAboutUsDetail
+{	
+	string title = 1;	
+	string language=2;
+	string heading=3;
+	string details=4;
+}
+
+message mdlJoinUsRequest {
+  string joinUsId=1;
+  string name = 2;
+  bool includeDetails =3;
+  bool includeAllLanguage=4;
+  repeated string language=5;
+}
+
+
+message mdlJoinUsList
+{
+	bool status=1;
+	string message=2;	
+    int32  statusId=3;
+	repeated mdlJoinUs joinUs=4; 
+}
+
+message mdlJoinUs{  
+  string defaultName = 1;
+  string joinUsId=2;
+  repeated mdlJoinUsDetail joinUsDetail=3;
+  string modifiedBy=4;
+  google.protobuf.Timestamp modifiedDt = 5;
+  int32 displayOrder = 6;
+}
+message mdlJoinUsDetail
+{	
+	string title = 1;
+	string language=2;
+	string heading=3;
+	string details=4;
+}
+
+
+message mdlFAQRequest {  
+  bool includeAllQuestion=1;
+  bool includeAllLanguage=2;
+  repeated string language=3;
+  string FAQId=4;
+}
+
+message mdlFAQList {   
+	bool status=1;
+	string message=2;	
+    int32  statusId=3;
+	repeated mdlFAQ FAQs=4;
+}
+
+message mdlFAQ{    
+  string FAQId=1;
+  int32 displayOrder = 2;
+  string defaultQuestion=3;
+  repeated mdlFAQDetail FAQDetail=4;
+  string modifiedBy=5;
+  google.protobuf.Timestamp modifiedDt = 6;
+}
+message mdlFAQDetail
+{	
+	string question = 1;
+	string answer = 2;
+	string language=3;	
+}
+
+
+
+message mdlOfficeRequest {   
+  string officeId=1;
+  string name = 2;
+  bool includeAllLanguage=3;
+  repeated string language=4;  
+}
+
+message mdlOfficeList {   
+	bool status=1;
+	string message=2;	
+    int32  statusId=3;
+	repeated mdlOffice office=4;
+}
+
+message mdlOffice{    
+  string officeId=1;
+  bool isActive = 2;
+  bool isHeadOffice = 3;
+  string locationName=4;
+  repeated mdlOfficeDetail officeDetail=5;
+  string modifiedBy=6;
+  google.protobuf.Timestamp modifiedDt = 7;
+}
+message mdlOfficeDetail
+{
+	
+	string region = 1;
+	string location = 2;
+	string Address = 3;
+	google.protobuf.StringValue contactNo = 4;
+	google.protobuf.StringValue longitude = 5;
+	google.protobuf.StringValue latitude = 6;
+	google.protobuf.StringValue image = 7;
+	google.protobuf.StringValue email= 8;
+	string language=9;	
+}
+
+
+
+
+
+message mdlContactUsRequest
+{
+    google.protobuf.Timestamp fromDt = 1;
+    google.protobuf.Timestamp toDt = 2;
+}
+
+message mdlContactUsList
+{
+    bool status=1;
+	string message=2;	
+    int32  statusId=3;
+	repeated mdlContactUs contactUs=4; 
+}
+
+message mdlContactUs
+{
+    string contactUsId=1;
+    string name = 2;
+    string email = 3;
+    string subject = 4;
+    string messages = 5;
+    string modifiedBy=6;
+    google.protobuf.Timestamp modifiedDt = 7;
+}
+
+
+
+message mdlComplaintRequest
+{
+	google.protobuf.StringValue complaintId = 1;
+	google.protobuf.StringValue complaintNo = 2;
+	google.protobuf.StringValue email = 3;
+	enmComplainType complainType =4;
+    google.protobuf.Timestamp fromDt = 5;
+    google.protobuf.Timestamp toDt = 6;
+}
+
+message mdlComplaintList
+{
+    bool status=1;
+	string message=2;	
+    int32  statusId=3;
+	repeated mdlComplaint complaint=4; 
+}
+
+message mdlComplaint
+{
+    string complaintId=1;
+    string name = 2;
+    string email = 3;
+    string subject = 4;
+    string messages = 5;
+	enmComplainType complaintType=6;
+	enmComplaintStatus ComplaintStatus=7;
+	google.protobuf.StringValue filePath=8;
+    string modifiedBy=9;
+    google.protobuf.Timestamp modifiedDt = 10;
+	repeated mdlComplaintProcess complaintProcess=11;
+}
+
+
+
+message mdlComplaintProcess
+{	
+	string messages=1;
+	string processBy=2;	
+	google.protobuf.Timestamp processDt = 3;
+	enmComplaintStatus ComplaintStatus=4;
+}
+
+message mdlComplaintProcessWrapper
+{
+	string complaintId=1;
+	string messages=2;
+	enmComplaintStatus ComplaintStatus=3;
+	string modifiedBy=4;
+    google.protobuf.Timestamp modifiedDt = 5;
+}
+
+
+
+message mdlLabelRequest {
+  string labelId=1;
+  repeated string names = 2;
+  bool includeDetails =3;
+  bool includeAllLanguage=4;
+  repeated string language=5;
+}
+
+
+message mdlLabelList
+{
+	bool status=1;
+	string message=2;	
+    int32  statusId=3;
+	repeated mdlLabel labels=4; 
+}
+
+
+message mdlLabel{  
+	string labelId=1;
+	string defaultName = 2;  
+	repeated mdlLabelDetail labelDetail=3;
+	string modifiedBy=4;
+	google.protobuf.Timestamp modifiedDt = 5;
+	int32 displayOrder = 6;
+	
+}
+
+message mdlLabelDetail
+{	
+		
+	string language=1;	
+	string name=2;
+}
+
+
+
+message mdlStaticWebSaveResponse
+{
+	bool status=1;
+	string message=2;
+	string messageId =3;	
+    int32  statusId=4;
+}
+
+enum enmComplainType
+{
+    None=0;
+    Complaint=1;
+    Feedback=2;    
+}
+enum enmComplaintStatus
+{
+    Pending=0;
+    InProcess=1;
+    Resolve=2;    
+}

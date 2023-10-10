@@ -4,9 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
-using ProtoBuf.Grpc.Client;
-using srvMasters.protos;
-using System.Net.Mail;
+#if(false)
 
 namespace API.Controllers
 {
@@ -223,3 +221,5 @@ namespace API.Controllers
         }
     }
 }
+
+#endif

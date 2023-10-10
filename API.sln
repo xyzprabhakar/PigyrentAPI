@@ -5,10 +5,6 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{6DF57784-C118-4007-B794-B2CBBA445FDB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{39433DDA-C367-4FFC-ADBA-C91712E5268A}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedProt", "SharedProt", "{74C54293-7AA7-42AA-8A5E-E5891661CA3B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRM", "CRM\CRM.csproj", "{94798E91-09D5-4CB9-AD2E-84A02BE934BD}"
 EndProject
 Global
@@ -28,9 +24,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{74C54293-7AA7-42AA-8A5E-E5891661CA3B} = {39433DDA-C367-4FFC-ADBA-C91712E5268A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {02485C69-8DE0-46D4-B809-26F3455C0813}

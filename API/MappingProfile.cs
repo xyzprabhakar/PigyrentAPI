@@ -2,8 +2,8 @@
 using AutoMapper;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Routing.Constraints;
-using srvProduct.protos;
-using srvStaticWeb.protos;
+using ProductServices;
+using StaticContentServices;
 
 namespace API
 {

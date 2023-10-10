@@ -1,4 +1,4 @@
-﻿using srvProduct.protos;
+﻿using ProductServices;
 using System;
 
 namespace API.Models
@@ -37,8 +37,8 @@ namespace API.Models
         public string Title { get; set; } = null!;
         public string Language { get; set; } = null!;
         public string? ShortDesc { get; set; } = string.Empty;
-        public List<string>? Keywords { get; set; }
-        public List<dtoProperty>? Properties { get; set; } = new List<dtoProperty>();
+        public List<string> Keywords { get; set; } = new();
+        public List<dtoProperty> Properties { get; set; } = new();
     }
 
     public class dtoProperty

@@ -14,6 +14,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Protos\category.proto" />
+    <None Remove="Protos\staticWeb.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="Google.Protobuf" Version="3.23.2" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.49.0" />
@@ -29,6 +34,11 @@
 
   <ItemGroup>
     <Folder Include="Classes\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\category.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\staticWeb.proto" GrpcServices="Client" />
   </ItemGroup>
 
 </Project>
