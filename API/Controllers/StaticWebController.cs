@@ -1,10 +1,13 @@
-﻿using API.Models;
+﻿using API.Classes;
+using API.Models;
 using AutoMapper;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using ProductServices;
 using StaticContentServices;
+using System.Collections.Generic;
 
 namespace API.Controllers
 {
@@ -432,6 +435,37 @@ namespace API.Controllers
                 _logger.LogError(ex, "Error: StaticWebController.SaveComplaint() " + ex.Message);
             }
             return Ok(returnData);
+        }
+
+
+        [HttpGet]
+        [Route("GetMenu")]
+        public async Task<IActionResult> GetMenu([FromQuery]string language, [FromServices]InMemoryCache memoryCache)
+        {
+            List<dtoMenuMaster> returnList = new();
+            try
+            {
+                if (string.IsNullOrWhiteSpace(language))
+                {
+                    ModelState.AddModelError(nameof(language), enmErrorMessage.IdentifierRequired.ToString());
+                }
+                if (ModelState.IsValid)
+                {
+                    Menu menu = new Menu(_grpcServices);
+                    menu.Language = language;
+                    returnList.AddRange(await menu.GeMenuAsync(memoryCache));
+                }
+                else
+                {
+                    return _apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error: MasterController.GetMenu() " + ex.Message);
+            }
+            return Ok(returnList);
+
         }
     }
 }

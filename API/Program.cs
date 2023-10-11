@@ -1,12 +1,17 @@
 using API;
+using API.Classes;
 using AutoMapper;
 using Serilog;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.Configure<GRPCServices>(builder.Configuration.GetSection("GRPCServices"));
+Constant.ROOT_PATH = builder.Environment.ContentRootPath;
 
+
+
+builder.Services.Configure<GRPCServices>(builder.Configuration.GetSection("GRPCServices"));
+builder.Services.AddScoped(typeof(InMemoryCache));
 
 // Add services to the container.
 builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
