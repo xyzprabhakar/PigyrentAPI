@@ -1,0 +1,86 @@
+ [
+    {
+      "MenuName": "Home",
+      "DisplayName": "Home",
+      "Routerlink": "/",
+      "DisplayType": 3,
+      "DisplayOrder": 1,
+      "ChildMenu": []
+    },
+    {
+      "MenuName": "Dashboard",
+      "DisplayName": "Dashboard",
+      "Routerlink": "/",
+      "DisplayType": 2,
+      "DisplayOrder": 2,
+      "ChildMenu": []
+    },
+    {
+      "MenuName": "Product",
+      "DisplayName": "Product",
+      "Routerlink": "/",
+      "DisplayType": 3,
+      "DisplayOrder": 3,
+      "ChildMenu": []
+    },
+    {
+      "MenuName": "AboutUs",
+      "DisplayName": "About Us",
+      "Routerlink": "/",
+      "DisplayType": 1,
+      "DisplayOrder": 4,
+      "ChildMenu": []
+    },
+    {
+      "MenuName": "JoinUs",
+      "DisplayName": "Join Us",
+      "Routerlink": "/",
+      "DisplayType": 1,
+      "DisplayOrder": 5,
+      "ChildMenu": [
+        {
+          "MenuName": "FAQ",
+          "DisplayName": "FAQ",
+          "Routerlink": "/faq",
+          "DisplayType": 10,
+          "DisplayOrder": 1,
+          "ChildMenu": []
+        }
+      ]
+    },
+    {
+      "MenuName": "Contact",
+      "DisplayName": "Contact",
+      "Routerlink": "/",
+      "DisplayType": 3,
+      "DisplayOrder": 10,
+      "ChildMenu": [
+        {
+          "MenuName": "ContactUs",
+          "DisplayName": "Contact Us",
+          "Routerlink": "/contact-us",
+          "DisplayType": 1,
+          "DisplayOrder": 1,
+          "ChildMenu": []
+        },
+        {
+          "MenuName": "Office",
+          "DisplayName": "Office",
+          "Routerlink": "/office",
+          "DisplayType": 1,
+          "DisplayOrder": 2,
+          "ChildMenu": []
+        },
+        {
+          "MenuName": "Complaints and Feedback",
+          "DisplayName": "Complaints & Feedback",
+          "Routerlink": "/complaints-and-feedback",
+          "DisplayType": 1,
+          "DisplayOrder": 3,
+          "ChildMenu": []
+        }
+
+      ]
+    }
+  ]
+ 

@@ -257,10 +257,9 @@ message mdlComplaintProcessWrapper
 
 message mdlLabelRequest {
   string labelId=1;
-  repeated string names = 2;
-  bool includeDetails =3;
-  bool includeAllLanguage=4;
-  repeated string language=5;
+  repeated string names = 2;  
+  bool includeAllLanguage=3;
+  repeated string language=4;
 }
 
 

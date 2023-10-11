@@ -4,8 +4,8 @@ using Grpc.Net.Client;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using StaticContentServices;
 
-#if (false)
 namespace API.Controllers
 {
     [Route("api/[controller]")]
@@ -433,9 +433,7 @@ namespace API.Controllers
             }
             return Ok(returnData);
         }
-
     }
 }
 
 
-#endif
