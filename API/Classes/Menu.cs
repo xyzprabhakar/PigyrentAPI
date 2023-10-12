@@ -41,8 +41,9 @@ namespace API.Classes
 
         private void ReadFromFile()
         {
+            var fullPath = Path.Combine(Constant.ROOT_PATH, Constant.MENU_JSON_PATH);
             var serializer = new Newtonsoft.Json.JsonSerializer();            
-            using (var streamReader = new StreamReader(Constant.MENU_JSON_PATH))
+            using (var streamReader = new StreamReader(fullPath))
             using (var textReader = new JsonTextReader(streamReader))
             {
                 _menuData.AddRange(serializer.Deserialize<List<dtoMenuMaster>>(textReader)!.OrderBy(p=>p.DisplayOrder));
@@ -191,7 +192,7 @@ namespace API.Classes
             }
         }
 
-        public async List<dtoMenuMaster> GetMenu()
+        private async Task< List<dtoMenuMaster>> GetProcessedMenu()
         {
             Task taskFromFile = Task.Run(()=>ReadFromFile());            
             var taskCategoryMenu = Task.Run(() => LoadCategory());
@@ -224,5 +225,10 @@ namespace API.Classes
 
         }
 
+        public async Task<List<dtoMenuMaster>> GeMenuAsync(InMemoryCache memoryCache)
+        {
+            Func<Task<List<dtoMenuMaster>>> proc = GetProcessedMenu;
+            return await memoryCache.GetOrCreateAsync($"menu_{_language}", proc);
+        }
     }
 }
