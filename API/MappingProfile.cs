@@ -4,6 +4,7 @@ using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Routing.Constraints;
 using ProductServices;
 using StaticContentServices;
+using UserDetail;
 
 namespace API
 {
@@ -41,6 +42,17 @@ namespace API
             CreateMap<mdlFAQDetail, dtoFAQDetail>().ReverseMap();
             CreateMap<mdlFAQ, dtoFAQ>().ReverseMap()
                 .ForMember(x => x.FAQId, opts => opts.PreCondition((src) => src.FAQId != null))
+                .ForMember(dest => dest.ModifiedDt, act => act.MapFrom(src => Timestamp.FromDateTime(DateTime.SpecifyKind(currentDt, DateTimeKind.Utc))));
+
+            CreateMap<mdlLoginRequest, dtoSigninRequest>().ReverseMap();
+            CreateMap<mdlLoginResponse, dtoSignInResponse>().ReverseMap();
+
+            CreateMap<mdlLastLoginHistory, dtoLastLoginHistory>().ReverseMap();
+            CreateMap<mdlUserLoginDetail, dtoUserLoginDetail>().ReverseMap();
+            CreateMap<mdlUserAddress, dtoUserAddress>().ReverseMap();
+            CreateMap<mdlUserDetail, dtoUserDetail>().ReverseMap();
+            CreateMap<mdlUser, dtoUser>().ReverseMap()
+                .ForMember(x => x.UserId, opts => opts.PreCondition((src) => src.UserId != null))
                 .ForMember(dest => dest.ModifiedDt, act => act.MapFrom(src => Timestamp.FromDateTime(DateTime.SpecifyKind(currentDt, DateTimeKind.Utc))));
 
         }
