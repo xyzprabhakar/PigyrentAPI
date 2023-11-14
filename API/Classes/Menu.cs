@@ -153,7 +153,7 @@ namespace API.Classes
             return returnData;
         }
 
-        private void LoadLabel(List<string> Keys)
+        private void LoadLabel(List<Tuple<string,string>> Keys)
         {
             using var channel = GrpcChannel.ForAddress(_grpcServices.Value.StaticWebServices);
             {
@@ -163,12 +163,12 @@ namespace API.Classes
                     IncludeAllLanguage = false
                 };
                 requestData.Language.Add(_language);
-                requestData.Names.AddRange(Keys);
+                requestData.Names.AddRange(Keys.Select(p=>p.Item1));
                 var responseData=client.GetLabel(requestData);
-                _labelData = (from t1 in Keys.Distinct()
-                                  join t2 in responseData.Labels on t1 equals t2.DefaultName into t1t2
+                _labelData = (from t1 in Keys
+                                  join t2 in responseData.Labels on t1.Item1 equals t2.DefaultName into t1t2
                                   from _t1t2 in t1t2.DefaultIfEmpty()
-                                  select new { key = t1, value = _t1t2?.LabelDetail?.FirstOrDefault()?.Name ?? t1 })
+                                  select new { key = t1.Item1, value =  _t1t2?.LabelDetail?.FirstOrDefault()?.Name ?? t1.Item2 })
                                 .ToDictionary(p => p.key, q => q.value);
 
                 
@@ -199,16 +199,16 @@ namespace API.Classes
             var taskAboutUsMenu = Task.Run(() => LoadAboutUs());
             var taskJoinUsMenu = Task.Run(() => LoadAboutUs());
             await taskFromFile;
-            List<string> labelData = new List<string>();
-            labelData.AddRange(_menuData.Select(p=>p.MenuName));
-            labelData.AddRange(_menuData.SelectMany(p => p.ChildMenu.Select(p => p.MenuName)));
-            labelData.AddRange(_menuData.SelectMany(p => p.ChildMenu.SelectMany(q => q.ChildMenu.Select(r=>r.MenuName))));
-            var taskLabel = Task.Run(() => LoadLabel(labelData));
+            List<Tuple< string,string>> labelData = new List<Tuple<string,string>>();
+            labelData.AddRange(_menuData.Select(p=>new Tuple<string,string>( p.MenuName,p.DisplayName )));
+            labelData.AddRange(_menuData.SelectMany(p => p.ChildMenu.Select(p => new Tuple<string, string>(p.MenuName,p.DisplayName))));
+            labelData.AddRange(_menuData.SelectMany(p => p.ChildMenu.SelectMany(q => q.ChildMenu.Select(r=> new Tuple<string, string>(r.MenuName,r.DisplayName)))));
+            var taskLabel = Task.Run(() => LoadLabel(labelData ));
             await Task.WhenAll(taskLabel, taskCategoryMenu, taskAboutUsMenu, taskJoinUsMenu);
             ChangeDisplayName(_menuData);
             _menuData.ForEach(p =>
             {
-                if (p.MenuName.Equals("Category", StringComparison.OrdinalIgnoreCase))
+                if (p.MenuName.Equals("Rent", StringComparison.OrdinalIgnoreCase))
                 {
                     p.ChildMenu.AddRange(taskCategoryMenu.Result);
                 }

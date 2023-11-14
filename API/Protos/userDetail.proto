@@ -1,0 +1,172 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "UserDetail";
+
+package userDetail;
+
+// The greeting service definition.
+service IUserDetail {  
+  rpc CreateUser (mdlUser) returns (mdlUserDetailSaveResponse);
+  rpc GetUserInfoById (mdlUserId ) returns (mdlUserWrapper);
+  rpc GetUserInfoByEmail (mdlUserEmail) returns (mdlUserWrapper);
+  rpc Login(mdlLoginRequest) returns (mdlLoginResponse);
+
+}
+message mdlUser{
+  string userId = 1;
+  string nickName=2;
+  string email=3;
+  int32 partitionId=4;
+  google.protobuf.StringValue sponsorUserId=5;
+  int32 legId=6;
+  mdlUserDetail userDetail=7;  
+  bool isActive=8;
+  string modifiedBy=9;  
+  google.protobuf.Timestamp modifiedDt = 10;
+  mdlUserLoginDetail userLoginDetail=11;
+
+}
+
+message mdlUserDetail{
+	string detailId= 1;	
+	string userId = 2;
+	int32 partitionId = 3;
+	string firstName=4;
+	google.protobuf.StringValue middleName=5;
+	string lastName=6;
+	google.protobuf.StringValue alternateEmail=7;
+	string ContactNo=8;
+	google.protobuf.StringValue alternateContactNo=9;
+	string language=10;
+	string currency=11;
+	bool isTerminate=12;
+	google.protobuf.Timestamp terminateDt=13;	
+	google.protobuf.StringValue remarks=14;
+	mdlUserAddress userAddress=15;
+	google.protobuf.StringValue profileImage=16;
+	string modifiedBy=17;
+    google.protobuf.Timestamp modifiedDt = 18;
+	bool isActive=19;
+}
+
+message mdlUserBankDetail{
+	string userBankId=1;
+	string userId=2;
+	int32 partitionId=3;
+	string bankId=4;
+	string bankCode=5;
+	string accountNo=6;
+	string modifiedBy=7;
+    google.protobuf.Timestamp modifiedDt = 8;
+	bool isActive=10;
+}
+
+message mdlUserAddress{
+	string countryId =1;
+	string stateId =2;
+	string cityId =3;
+	string localityId =4;
+	string pincode =5;
+	string address =6;
+}
+
+
+message mdlUserUpline {	
+	string detailId =1;
+	string userId=2;
+	int32 partitionId=3;
+	repeated mdlUplineDetail uplineDetail=4;
+}
+message mdlUplineDetail{
+	string uplineUserId=1;
+	int32 partitionId=2;	
+	int32 depthId=3;
+}
+
+message mdlUserDetailSaveResponse
+{
+	bool status=1;
+	string message=2;
+	string messageId =3;	
+    int32  statusId=4;
+}
+
+message mdlUserLoginDetail
+{
+	string loginLogId =1;
+	string userId =2;
+	int32 partitionId =3;
+	string password =4;
+	bool forceToChangePassword =5;
+	google.protobuf.Timestamp passwordExpiryDt=6; 
+	bool isTempBlock =7;
+	google.protobuf.Timestamp tempBlockDt =8;
+	google.protobuf.StringValue lastPassword=9;
+	repeated string registerDeviceId=10;
+	repeated string roles=11;
+	repeated  mdlLastLoginHistory lastLoginHistory=12;
+	repeated mdlClaimName userClaim=13;
+	
+}
+
+message mdlLastLoginHistory{
+	google.protobuf.Timestamp  loginDt=1;
+	string IpAddress=2;
+	string deviceId =3;
+	string deviceName=4;
+	bool isSuccess=5;
+}
+
+message mdlClaimName
+{
+	string claimName=1;
+	repeated string claimValue=2;
+}
+
+message mdlRole
+{
+	string roleName=1;
+	repeated mdlClaimName roleClaim=2;
+}
+
+message mdlUserId
+{
+	string userId=1;
+	int32  partitionID=2;
+}
+message mdlUserEmail
+{
+	string email=1;
+}
+
+
+message mdlUserWrapper
+{
+	bool status=1;
+	string message=2;
+	string messageId =3;	
+    int32  statusId=4;
+	repeated mdlUser user=5;
+}
+
+message mdlLoginRequest
+{
+	string email=1;
+	string IpAddress=2;
+	string password=3;
+	string deviceId=4;
+	string deviceName=5;
+}
+
+message mdlLoginResponse
+{
+	string nickName=1;	
+	string message=2;
+	string messageId =3;	
+    int32  statusId=4;
+	bool status=5;
+	repeated string roleName=6; 
+}
+

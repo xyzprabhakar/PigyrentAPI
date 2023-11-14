@@ -6,5 +6,6 @@ namespace API
         public string ProductServices { get; set; } = null!;
         public string MasterServices { get; set; } = null!;
         public string StaticWebServices { get; set; } = null!;
+        public string UserDetailServices { get; set; } = null!;
     }
 }

@@ -13,6 +13,9 @@ Constant.ROOT_PATH = builder.Environment.ContentRootPath;
 builder.Services.Configure<GRPCServices>(builder.Configuration.GetSection("GRPCServices"));
 builder.Services.AddScoped(typeof(InMemoryCache));
 
+builder.Services.AddCors(option=> option.AddPolicy(  name: "allowedPigyRentUI", p => { p.WithOrigins("http://localhost:4200"); }));
+
+
 // Add services to the container.
 builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -35,6 +38,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("allowedPigyRentUI");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
