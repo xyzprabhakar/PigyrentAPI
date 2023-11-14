@@ -7,7 +7,7 @@ namespace API.Models
     {
 
         public string Email { get; set; } = "";
-        public string IpAddress {get;set;} = "";
+        public string? IpAddress {get;set;} = "";
         public string Password {get;set;} = "";
         public string? DeviceId {get;set;}
         public string? DeviceName { get; set; }
@@ -15,12 +15,15 @@ namespace API.Models
 
     public class dtoSignInResponse
     {
+        public string UserId { get; set; } = "";
+        public string Email { get; set; } = "";
         public string NickName { get; set; } = "";
         public string Message { get; set; } = "";
         public string MessageId { get; set; } = "";
         public int StatusId { get; set; }
         public bool Status { get; set; }
         public List<string> roleName { get; set; } = new();
+        public string? Token { get; set; }
     }
 
 
