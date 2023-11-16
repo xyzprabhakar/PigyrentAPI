@@ -9,6 +9,8 @@ namespace API.Models
         public string Email { get; set; } = "";
         public string? IpAddress {get;set;} = "";
         public string Password {get;set;} = "";
+        public string? CaptchaId { get; set; }
+        public string? CaptchaValue { get; set; }
         public string? DeviceId {get;set;}
         public string? DeviceName { get; set; }
     }
@@ -24,6 +26,7 @@ namespace API.Models
         public bool Status { get; set; }
         public List<string> roleName { get; set; } = new();
         public string? Token { get; set; }
+        public int ExpireIn { get; set; }
     }
 
 

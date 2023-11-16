@@ -187,12 +187,13 @@ namespace API.Controllers
             foreach (var role in request.roleName)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
-            }            
+            }
+            request.ExpireIn = Convert.ToInt32(config["Jwt:TokenExpiryMin"]);
             claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
                         var token = new JwtSecurityToken(config["Jwt:Issuer"],
               config["Jwt:Issuer"],
               claims,
-              expires: DateTime.Now.AddMinutes(Convert.ToInt32( config["Jwt:TokenExpiryMin"])),
+              expires: DateTime.Now.AddMinutes(request.ExpireIn),
               signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
