@@ -1,11 +1,14 @@
 ﻿using API.Models;
 using AutoMapper;
 using Grpc.Net.Client;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using StaticContentServices;
-using System.Security.Cryptography;
+using Microsoft.IdentityModel.Tokens;
+using System.Data;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using UserDetail;
 
 namespace API.Controllers
@@ -133,7 +136,7 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("SignIn")]
-        public async Task<IActionResult> SignIn([FromBody] dtoSigninRequest request)
+        public async Task<IActionResult> SignIn([FromBody] dtoSigninRequest request, [FromServices]IHttpContextAccessor httpContextAccessor, [FromServices]IConfiguration config)
         {
             dtoSignInResponse returnData = new dtoSignInResponse();
             try
@@ -149,10 +152,15 @@ namespace API.Controllers
                 }
                 if (ModelState.IsValid)
                 {
+                    request.IpAddress = httpContextAccessor?.HttpContext?.Connection?.RemoteIpAddress?.ToString();
+                    request.DeviceName = httpContextAccessor?.HttpContext?.Request?.Headers["User-Agent"]??"";
+                    request.DeviceId = "";
                     var model = _mapper.Map<mdlLoginRequest>(request);
                     using var channel = GrpcChannel.ForAddress(_grpcServices.Value.UserDetailServices);
                     var client = new IUserDetail.IUserDetailClient (channel);
-                    returnData = _mapper.Map<dtoSignInResponse>( await client.LoginAsync(model));
+                    var loginResponse = _mapper.Map<dtoSignInResponse>(await client.LoginAsync(model));
+                    loginResponse.Token = GenrateJwtToken(loginResponse, config);
+                    returnData = loginResponse;
                 }
                 else
                 {
@@ -166,6 +174,36 @@ namespace API.Controllers
                 _logger.LogError(ex, "Error: UserDetailsController.SignIn() " + ex.Message);
             }
             return Ok(returnData);
+        }
+
+
+        private string GenrateJwtToken(dtoSignInResponse request, IConfiguration config)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]??""));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            List<Claim> claims = new List<Claim>();
+            claims.Add(new Claim(JwtRegisteredClaimNames.Email, request.Email));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Name, request.NickName));
+            foreach (var role in request.roleName)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }            
+            claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+                        var token = new JwtSecurityToken(config["Jwt:Issuer"],
+              config["Jwt:Issuer"],
+              claims,
+              expires: DateTime.Now.AddMinutes(Convert.ToInt32( config["Jwt:TokenExpiryMin"])),
+              signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        [HttpGet]
+        [Route("GetAllUser")]
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> GetAllUser()
+        {
+            return Ok(new List<string>() { "prabhakar", "Mohan" });
         }
 
     }

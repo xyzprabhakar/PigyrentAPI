@@ -159,14 +159,13 @@ message mdlLoginRequest
 	string deviceId=4;
 	string deviceName=5;
 }
-
 message mdlLoginResponse
 {
-	string nickName=1;	
-	string message=2;
-	string messageId =3;	
-    int32  statusId=4;
-	bool status=5;
-	repeated string roleName=6; 
+	string userId=1;
+	string email=2;
+	string nickName=3;	
+	string message=4;	
+    int32  statusId=6;
+	bool status=7;
+	repeated string roleName=8; 
 }
-
