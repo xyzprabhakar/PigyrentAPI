@@ -8,6 +8,7 @@ namespace API.Classes
 {
     public class CaptchaResult
     {
+        public string CaptchaId { get { return (new Guid()).ToString(); } }
         public string CaptchaCode { get; set; } = "";
         [JsonIgnore]
         public byte[]? CaptchaByteData { get; set; } 

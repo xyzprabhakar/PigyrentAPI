@@ -69,7 +69,7 @@ namespace API.Classes
                         DisplayName = cDetail?.Name ?? tempCategory.DefaultName,
                         DisplayOrder = 0,
                         DisplayType = enmMenuDisplayType.AlwaysVisible,
-                        Routerlink = $"{tempCategory.CategoryId}/{tempCategory.DefaultName}",
+                        Routerlink = $"category/{tempCategory.CategoryId}/{(tempCategory.DefaultName).ToLower()}",
                         ChildMenu=new()
                     };
                     foreach (var tempSubCategory in tempCategory.SubCategory.OrderBy(p=>p.DefaultName))
@@ -81,7 +81,7 @@ namespace API.Classes
                             DisplayName = sDetail?.Name ?? tempSubCategory.DefaultName,
                             DisplayOrder = 0,
                             DisplayType = enmMenuDisplayType.AlwaysVisible,
-                            Routerlink = $"category/{tempSubCategory.SubCategoryId}/{tempCategory.DefaultName}/{tempSubCategory.DefaultName}"
+                            Routerlink = $"sub-category/{tempSubCategory.SubCategoryId}/{tempCategory.DefaultName}/{tempSubCategory.DefaultName}"
                         };
                         cData.ChildMenu.Add(sData);
                     }
@@ -194,7 +194,7 @@ namespace API.Classes
 
         private async Task< List<dtoMenuMaster>> GetProcessedMenu()
         {
-            Task taskFromFile = Task.Run(()=>ReadFromFile());            
+            Task taskFromFile = Task.Run(()=>ReadFromFile());          
             var taskCategoryMenu = Task.Run(() => LoadCategory());
             var taskAboutUsMenu = Task.Run(() => LoadAboutUs());
             var taskJoinUsMenu = Task.Run(() => LoadAboutUs());

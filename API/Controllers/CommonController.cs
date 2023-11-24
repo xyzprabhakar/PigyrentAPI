@@ -22,7 +22,7 @@ namespace API.Controllers
         public async Task<IActionResult> GetCaptcha()
         {
             var code=Captcha.GenerateCaptchaCode();
-            var data=Captcha.GenerateCaptchaImage(50,150, code);
+            var data=Captcha.GenerateCaptchaImage(150,50, code);
             return Ok(data);
         }
     }

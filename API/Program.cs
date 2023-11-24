@@ -16,9 +16,10 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.Configure<GRPCServices>(builder.Configuration.GetSection("GRPCServices"));
 builder.Services.AddScoped(typeof(InMemoryCache));
 
-builder.Services.AddCors(option=> option.AddPolicy(  name: "allowedPigyRentUI", p => { p.WithOrigins("http://localhost:4200"); }));
+builder.Services.AddCors(option=> option.AddPolicy(  name: "allowedPigyRentUI", p => { p.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod(); }));
 // Add services to the container.
-builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
+builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy =
+System.Text.Json.JsonNamingPolicy.CamelCase);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
