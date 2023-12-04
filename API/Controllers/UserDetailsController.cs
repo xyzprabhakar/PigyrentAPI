@@ -1,5 +1,6 @@
 ﻿using API.Models;
 using AutoMapper;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -175,6 +176,122 @@ namespace API.Controllers
             }
             return Ok(returnData);
         }
+
+        [HttpPost]
+        [Route("SignUp")]
+        public async Task<IActionResult> SignUp([FromBody] dtoSignUpRequest request, [FromServices] IHttpContextAccessor httpContextAccessor, [FromServices] IConfiguration config)
+        {
+            mdlUserDetailSaveResponse returnData = new mdlUserDetailSaveResponse();
+            try
+            {
+
+                if (string.IsNullOrWhiteSpace(request.Email))
+                {
+                    ModelState.AddModelError(nameof(request.Email), enmErrorMessage.IdentifierRequired.ToString());
+                }
+                if (string.IsNullOrWhiteSpace(request.Password))
+                {
+                    ModelState.AddModelError(nameof(request.Password), enmErrorMessage.IdentifierRequired.ToString());
+                }
+                if (string.IsNullOrWhiteSpace(request.FirstName))
+                {
+                    ModelState.AddModelError(nameof(request.FirstName), enmErrorMessage.IdentifierRequired.ToString());
+                }
+                if (string.IsNullOrWhiteSpace(request.LastName))
+                {
+                    ModelState.AddModelError(nameof(request.LastName), enmErrorMessage.IdentifierRequired.ToString());
+                }
+                if (string.IsNullOrWhiteSpace(request.Contact))
+                {
+                    ModelState.AddModelError(nameof(request.Contact), enmErrorMessage.IdentifierRequired.ToString());
+                }
+                if (string.IsNullOrWhiteSpace(request.Country))
+                {
+                    ModelState.AddModelError(nameof(request.Country), enmErrorMessage.IdentifierRequired.ToString());
+                }
+                if (string.IsNullOrWhiteSpace(request.State))
+                {
+                    ModelState.AddModelError(nameof(request.State), enmErrorMessage.IdentifierRequired.ToString());
+                }
+                if (string.IsNullOrWhiteSpace(request.Address))
+                {
+                    ModelState.AddModelError(nameof(request.Address), enmErrorMessage.IdentifierRequired.ToString());
+                }
+                if (string.IsNullOrWhiteSpace(request.Pincode))
+                {
+                    ModelState.AddModelError(nameof(request.Pincode), enmErrorMessage.IdentifierRequired.ToString());
+                }
+
+                if (ModelState.IsValid)
+                {
+                    string? Language = httpContextAccessor?.HttpContext?.Request?.Headers["Language"];
+                    if (string.IsNullOrEmpty(Language))
+                    {
+                        Language = config.GetValue<string>("CustomSetting:DefaultLangulage");
+                    }
+                    string? Currency = httpContextAccessor?.HttpContext?.Request?.Headers["Currency"];
+                    if (string.IsNullOrEmpty(Currency))
+                    {
+                        Currency = config.GetValue<string>("CustomSetting:DefaultCurrency");
+                    }
+                    mdlUser model=new mdlUser() { 
+                        Email= request.Email,
+                        IsActive=true,
+                        NickName=string.Empty,
+                        SponsorUserId=request.SponsorUserId,                       
+                        ModifiedDt=Timestamp.FromDateTime(DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc) ),
+                        ModifiedBy=string.Empty,
+                        UserDetail=new mdlUserDetail()
+                        {
+                            FirstName= request.FirstName,
+                            LastName= request.LastName,
+                            MiddleName= request.MiddleName,
+                            ContactNo=request.Contact,
+                            Language= Language,
+                            Currency = Currency,
+                            IsTerminate=false,
+                            UserAddress=new mdlUserAddress()
+                            {
+                                CountryId=request.Country,
+                                StateId=request.State,
+                                CityId=request.City,
+                                LocalityId=request.LocalityId,
+                                Address=request.Address,
+                                Pincode=request.Pincode
+                            }
+
+                            
+                        },
+                        UserLoginDetail=new mdlUserLoginDetail()
+                        {
+                            ForceToChangePassword=false,
+                            IsTempBlock=false,
+                            Password=request.Password,                            
+                        }
+                    };
+                    string? DeviceName= httpContextAccessor?.HttpContext?.Request?.Headers["User-Agent"] ?? "";
+                    model.UserLoginDetail.RegisterDeviceId.Add(DeviceName);                    
+
+                    using var channel = GrpcChannel.ForAddress(_grpcServices.Value.UserDetailServices);
+                    var client = new IUserDetail.IUserDetailClient(channel);
+                    returnData = await client.CreateUserAsync(model);
+                    
+                }
+                else
+                {
+                    return _apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                returnData.Message = ex.Message;
+                _logger.LogError(ex, "Error: UserDetailsController.SignIn() " + ex.Message);
+            }
+            return Ok(returnData);
+        }
+
+
 
 
         private string GenrateJwtToken(dtoSignInResponse request, IConfiguration config)

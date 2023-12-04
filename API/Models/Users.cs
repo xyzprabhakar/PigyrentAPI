@@ -3,14 +3,18 @@ using System.ComponentModel.DataAnnotations;
 
 namespace API.Models
 {
-    public class dtoSigninRequest
+    public class dtoCaptcha
+    {
+        public string? CaptchaId { get; set; }
+        public string? CaptchaValue { get; set; }
+    }
+    public class dtoSigninRequest: dtoCaptcha
     {
 
         public string Email { get; set; } = "";
         public string? IpAddress {get;set;} = "";
         public string Password {get;set;} = "";
-        public string? CaptchaId { get; set; }
-        public string? CaptchaValue { get; set; }
+        
         public string? DeviceId {get;set;}
         public string? DeviceName { get; set; }
     }
@@ -30,13 +34,31 @@ namespace API.Models
     }
 
 
+    public class dtoSignUpRequest : dtoCaptcha
+    {
+        public string Email { get; set; } = null!;
+        public string SponsorUserId { get; set; } = null!;        
+        public string FirstName { get; set; } = null!;
+        public string? MiddleName { get; set; }
+        public string LastName { get; set; } = null!;        
+        public string Contact { get; set; } = null!;
+        public string Country { get; set; } = null!;
+        public string State { get; set; } = null!;
+        public string City { get; set; } = null!;
+        public string Locality { get; set; } = null!;
+        public string LocalityId { get; set; } = null!;
+        public string Pincode { get; set; } = null!;
+        public string Address { get; set; } = null!;
+        public string Password { get; set; } = null!;
+    }
+
     public class dtoUser 
     {        
         public string UserId { get; set; } = null!;
         public string? NickName { get; set; }
         public string Email { get; set; } = null!;
         public int PartitionId { get; set; }
-        public string? sponsorUserId { get; set; }
+        public string? SponsorUserId { get; set; }
         public int LegId { get; set; }
         public string? ModifiedBy { get; set; }
         public DateTime ModifiedDt { get; set; }
