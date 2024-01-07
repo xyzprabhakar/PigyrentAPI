@@ -1,0 +1,239 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "MasterServices";
+
+package masters;
+
+// The greeting service definition.
+service IMaster {  
+  rpc GetCountry (mdlCountryRequest) returns (mdlCountryList);
+  rpc GetState (mdlStateRequest) returns (mdlStateList);
+  rpc GetCity (mdlCityRequest) returns (mdlCityList);
+  rpc GetLocality(mdlLocalityRequest) returns (mdlLocalityList);
+  rpc GetCurrency(mdlCurrencyRequest) returns (mdlCurrencyList);
+  rpc GetLanguage(mdlLanguageRequest) returns (mdlLanguageList);
+
+  rpc SetCountry (mdlCountry) returns (mdlMasterSaveResponse);
+  rpc SetState (mdlState) returns (mdlMasterSaveResponse);
+  rpc SetCity (mdlCity) returns (mdlMasterSaveResponse);
+  rpc SetLocality(mdlLocality) returns (mdlMasterSaveResponse);
+  rpc SetCurrency(mdlCurrency) returns (mdlMasterSaveResponse);
+  rpc SetLanguage(mdlLanguage) returns (mdlMasterSaveResponse);
+}
+
+
+message mdlMasterSaveResponse
+{
+	bool status=1;
+	string message=2;
+	string messageId =3;	
+    int32  statusId=4;
+}
+
+message mdlCountryRequest {
+  string countryId=1;
+  string countryCode = 2;    
+  bool includeAllLanguage=3;
+  repeated string language=4;
+  bool includeInActive=5;
+}
+
+message mdlCountryList{
+	bool status=1;
+	string message=2;	
+    int32  statusId=3;
+	repeated mdlCountry country =4;
+}
+
+message mdlStateRequest {
+  string countryId=1;
+  string stateId=2;
+  string stateCode = 3;  
+  bool includeAllLanguage=4;
+  repeated string language=5;
+  bool includeInActive=6;
+}
+
+message mdlStateList
+{
+	bool status=1;
+	string message=2;	
+    int32  statusId=3;
+	repeated mdlState state=4;
+}
+
+message mdlCityRequest
+{
+  string countryId=1;
+  string stateId=2;
+  string cityId=3;   
+  bool includeAllLanguage=4;
+  repeated string language=5;
+  bool includeInActive=6;
+}
+
+message mdlCityList
+{
+	bool status=1;
+	string message=2;	
+    int32  statusId=3;
+	repeated mdlCity city=4;
+}
+
+message mdlLocalityRequest
+{
+	string cityId=1;
+	string localityId=2;
+	string localityName=3;
+	bool exactMatch=4;
+	bool includeAllLanguage=5;
+    repeated string language=6;
+	bool includeInActive=7;
+}
+message mdlLocalityList
+{
+	bool status=1;
+	string message=2;	
+    int32  statusId=3;
+	repeated mdlLocality locality =4;
+}
+
+
+message mdlCurrencyRequest
+{
+  string currencyId=1;
+  string currencyCode = 2;  
+  bool includeAllLanguage=3;
+  repeated string language=4;
+  bool includeInActive=5;
+}
+
+message mdlCurrencyList
+{
+	bool status=1;
+	string message=2;	
+    int32  statusId=3;
+	repeated mdlCurrency currency=4;
+}
+
+message mdlLanguageRequest{
+	string languageId=1;
+	bool includeInActive=2;
+}
+
+message mdlLanguageList
+{
+	bool status=1;
+	string message=2;	
+    int32  statusId=3;
+	repeated mdlLanguage language=4;
+}
+
+message mdlCountry{  
+	string countryId=1;
+	string code = 2;  
+	repeated mdlCountryDetail countryDetail=3;
+	string modifiedBy=4;
+	google.protobuf.Timestamp modifiedDt = 5;
+	int32 displayOrder = 6;
+	repeated mdlCountryTimeZone timeZones=7;
+}
+
+message mdlCountryDetail
+{	
+	google.protobuf.StringValue name= 1;
+    google.protobuf.StringValue phoneCode= 2;
+    google.protobuf.StringValue capital= 3;
+	repeated string currency=4;
+	repeated string languages=5;
+	google.protobuf.StringValue stateSynonyms= 6;//what we called state/proviance	 
+	bool haveState=7;
+	string language=8;
+	 
+}
+message mdlCountryTimeZone{
+	google.protobuf.StringValue zoneName=1;
+	google.protobuf.StringValue offset=2;
+	google.protobuf.StringValue offsetName=3;
+	google.protobuf.StringValue abbreviation=4;
+	google.protobuf.StringValue tzName=5;	
+}
+
+message mdlState
+{
+	string stateId = 1;
+	string code = 2;
+	string countryId=3;
+	repeated mdlStateDetail stateDetail=4;
+	google.protobuf.StringValue latitude= 5;
+	google.protobuf.StringValue longitude= 6;
+	string modifiedBy=7;
+	google.protobuf.Timestamp modifiedDt = 8;
+	int32 displayOrder = 9;
+}
+message mdlStateDetail
+{
+	string name = 1;
+	string language=2;
+}
+
+message mdlCity{
+	string cityId = 1;
+	string name=2;	
+	google.protobuf.StringValue latitude=3;
+	google.protobuf.StringValue longitude=4;
+	repeated mdlCityDetail cityDetail=5;
+	string countryId=6;
+	string stateId=7;
+	string modifiedBy=8;
+	google.protobuf.Timestamp modifiedDt = 9;
+}
+
+message mdlCityDetail{
+	string name=1;
+	string language=2;
+}
+
+message mdlLocality{
+	string localityId = 1;
+	string name=2;
+	string cityId=3;
+	repeated mdlLocalityDetail localityDetail=4;
+	string modifiedBy=5;
+	google.protobuf.Timestamp modifiedDt = 6;
+	google.protobuf.StringValue latitude=7;
+	google.protobuf.StringValue longitude=8;
+}
+message mdlLocalityDetail
+{
+	string name=1;
+	string language=2;
+}
+
+message mdlCurrency
+{
+	string currencyId = 1;
+	string code=2;
+	google.protobuf.StringValue symbol=3;
+	google.protobuf.StringValue modifiedBy=4;  
+	google.protobuf.Timestamp modifiedDt = 5;
+	repeated mdlCurrencyDetail currencyDetail=6;
+}
+
+message mdlCurrencyDetail
+{
+	string name=1;
+	string language=2;
+}
+
+message mdlLanguage
+{
+	string languageId = 1;
+	string code=2;
+	google.protobuf.StringValue name=3;
+	google.protobuf.StringValue modifiedBy=4;  
+	google.protobuf.Timestamp modifiedDt = 5;
+}
+

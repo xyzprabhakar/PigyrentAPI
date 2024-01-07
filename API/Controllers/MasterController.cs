@@ -3,8 +3,9 @@ using Grpc.Net.Client;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-
-#if(false)
+using MasterServices;
+using ProductServices;
+using API.Classes;
 
 namespace API.Controllers
 {
@@ -24,18 +25,20 @@ namespace API.Controllers
 
         [HttpGet]
         [Route(nameof(GetAllCurrency))]
-        public async Task<IActionResult> GetAllCurrency([FromQuery]mdlCurrencyRequest request)
+        public async Task<IActionResult> GetAllCurrency([FromQuery]mdlCurrencyRequest request, [FromHeader] dtoHeaders header)
         {
             mdlCurrencyList returnList = new mdlCurrencyList();
-            try {
-                if (!string.IsNullOrEmpty(request.CurrencyId) && _grpcServices.Value.IdLength != request.CurrencyId.Length)
+            try
+            {   
+                if (!string.IsNullOrEmpty(request.CurrencyId) && request.CurrencyId.Length != _grpcServices.Value.IdLength)
                 {
                     ModelState.AddModelError(nameof(request.CurrencyId), enmErrorMessage.IdentifierLength.ToString());
                 }
                 if (ModelState.IsValid)
                 {
+                    Headers.BindLanguage(header, request);
                     using var channel = GrpcChannel.ForAddress(_grpcServices.Value.MasterServices);
-                    var client =new ICurrency.ICurrencyClient(channel);
+                    var client = new IMaster.IMasterClient(channel);
                     returnList = await client.GetCurrencyAsync(request);
                 }
                 else
@@ -49,6 +52,188 @@ namespace API.Controllers
             }
             return Ok(returnList);
         }
+
+        [HttpGet]
+        [Route(nameof(GetCountry))]
+        public async Task<IActionResult> GetCountry([FromQuery] mdlCountryRequest request, [FromHeader] dtoHeaders header)
+        {
+            mdlCountryList returnList = new mdlCountryList();
+            try
+            {
+                if (!string.IsNullOrEmpty(request.CountryId) && request.CountryId.Length != _grpcServices.Value.IdLength)
+                {
+                    ModelState.AddModelError(nameof(request.CountryId), enmErrorMessage.IdentifierLength.ToString());
+                }
+                if (ModelState.IsValid)
+                {
+                    Headers.BindLanguage(header, request);
+                    using var channel = GrpcChannel.ForAddress(_grpcServices.Value.MasterServices);
+                    var client = new IMaster.IMasterClient(channel);
+                    returnList = await client.GetCountryAsync(request);
+                }
+                else
+                {
+                    return _apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error: MasterController.GetCountry() " + ex.Message);
+            }
+            return Ok(returnList);
+        }
+
+        [HttpGet]
+        [Route(nameof(GetState))]
+        public async Task<IActionResult> GetState([FromQuery] mdlStateRequest request, [FromHeader] dtoHeaders header)
+        {
+            mdlStateList returnList = new mdlStateList();
+            try
+            {
+                if (!string.IsNullOrEmpty(request.CountryId) && request.CountryId.Length != _grpcServices.Value.IdLength)
+                {
+                    ModelState.AddModelError(nameof(request.CountryId), enmErrorMessage.IdentifierLength.ToString());
+                }
+                if (!string.IsNullOrEmpty(request.StateId) && request.StateId.Length != _grpcServices.Value.IdLength)
+                {
+                    ModelState.AddModelError(nameof(request.StateId), enmErrorMessage.IdentifierLength.ToString());
+                }
+                if (ModelState.IsValid)
+                {
+                    Headers.BindLanguage(header, request);
+                    using var channel = GrpcChannel.ForAddress(_grpcServices.Value.MasterServices);
+                    var client = new IMaster.IMasterClient(channel);
+                    returnList = await client.GetStateAsync(request);
+                }
+                else
+                {
+                    return _apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error: MasterController.State() " + ex.Message);
+            }
+            return Ok(returnList);
+        }
+
+        [HttpGet]
+        [Route(nameof(GetCity))]
+        public async Task<IActionResult> GetCity([FromQuery] mdlCityRequest request, [FromHeader] dtoHeaders header)
+        {
+            mdlCityList returnList = new mdlCityList();
+            try
+            {
+                if (!string.IsNullOrEmpty(request.CountryId) && request.CountryId.Length != _grpcServices.Value.IdLength)
+                {
+                    ModelState.AddModelError(nameof(request.CountryId), enmErrorMessage.IdentifierLength.ToString());
+                }
+                if (!string.IsNullOrEmpty(request.StateId) && request.StateId.Length != _grpcServices.Value.IdLength)
+                {
+                    ModelState.AddModelError(nameof(request.StateId), enmErrorMessage.IdentifierLength.ToString());
+                }
+                if (!string.IsNullOrEmpty(request.CityId) && request.CityId.Length != _grpcServices.Value.IdLength)
+                {
+                    ModelState.AddModelError(nameof(request.CityId), enmErrorMessage.IdentifierLength.ToString());
+                }
+                if (ModelState.IsValid)
+                {
+                    Headers.BindLanguage(header, request);
+                    using var channel = GrpcChannel.ForAddress(_grpcServices.Value.MasterServices);
+                    var client = new IMaster.IMasterClient(channel);
+                    returnList = await client.GetCityAsync(request);
+                }
+                else
+                {
+                    return _apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error: MasterController.GetCity() " + ex.Message);
+            }
+            return Ok(returnList);
+        }
+
+        [HttpGet]
+        [Route(nameof(GetLocality))]
+        public async Task<IActionResult> GetLocality([FromQuery] mdlLocalityRequest request, [FromHeader] dtoHeaders header)
+        {
+            mdlLocalityList returnList = new mdlLocalityList();
+            try
+            {
+                if (!string.IsNullOrEmpty(request.CityId) && request.CityId.Length != _grpcServices.Value.IdLength)
+                {
+                    ModelState.AddModelError(nameof(request.CityId), enmErrorMessage.IdentifierLength.ToString());
+                }
+                
+                if (!string.IsNullOrEmpty(request.LocalityId) && request.LocalityId.Length != _grpcServices.Value.IdLength)
+                {
+                    ModelState.AddModelError(nameof(request.LocalityId), enmErrorMessage.IdentifierLength.ToString());
+                }
+                if (ModelState.IsValid)
+                {
+                    Headers.BindLanguage(header, request);
+                    using var channel = GrpcChannel.ForAddress(_grpcServices.Value.MasterServices);
+                    var client = new IMaster.IMasterClient(channel);
+                    returnList = await client.GetLocalityAsync(request);
+                }
+                else
+                {
+                    return _apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error: MasterController.GetLocality() " + ex.Message);
+            }
+            return Ok(returnList);
+        }
+
+        [HttpGet]
+        [Route(nameof(GetLanguage))]
+        public async Task<IActionResult> GetLanguage([FromQuery] mdlLanguageRequest request, [FromHeader] dtoHeaders header)
+        {
+            mdlLanguageList returnList = new mdlLanguageList();
+            try
+            {
+                if (!string.IsNullOrEmpty(request.LanguageId) && request.LanguageId.Length != _grpcServices.Value.IdLength)
+                {
+                    ModelState.AddModelError(nameof(request.LanguageId), enmErrorMessage.IdentifierLength.ToString());
+                }
+
+                
+                if (ModelState.IsValid)
+                {
+                    Headers.BindLanguage(header, request);
+                    using var channel = GrpcChannel.ForAddress(_grpcServices.Value.MasterServices);
+                    var client = new IMaster.IMasterClient(channel);
+                    returnList = await client.GetLanguageAsync(request);
+                }
+                else
+                {
+                    return _apiBehaviorOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error: MasterController.GetLanguage() " + ex.Message);
+            }
+            return Ok(returnList);
+        }
+
+    }
+}
+
+#if(false)
+
+namespace API.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class MasterController : ControllerBase
+    {
+        
 
         [HttpPost]
         [Route(nameof(SaveCurrency))]

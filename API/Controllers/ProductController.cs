@@ -41,7 +41,7 @@ namespace API.Controllers
             {
                 if (string.IsNullOrEmpty(request.Name))
                 {
-                    ModelState.AddModelError(nameof(request.Name), enmErrorMessage.IdentifierLength.ToString());
+                    ModelState.AddModelError(nameof(request.Name), enmErrorMessage.IdentifierRequired.ToString());
                 }
                 if (ModelState.IsValid)
                 {

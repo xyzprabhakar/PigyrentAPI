@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <None Remove="Protos\category.proto" />
+    <None Remove="Protos\masters.proto" />
     <None Remove="Protos\staticWeb.proto" />
     <None Remove="Protos\userDetail.proto" />
   </ItemGroup>
@@ -40,6 +41,7 @@
 
   <ItemGroup>
     <Protobuf Include="Protos\category.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\masters.proto" />
     <Protobuf Include="Protos\staticWeb.proto" GrpcServices="Client" />
     <Protobuf Include="Protos\userDetail.proto" />
   </ItemGroup>

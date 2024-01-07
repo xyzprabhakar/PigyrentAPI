@@ -11,4 +11,20 @@ namespace API.Models
         public string? UserId { get; set; }        
         public string? Token{ get; set; }
     }
+
+    public abstract class ModifyDetails
+    {
+        public string? ModifiedBy { get; set; }
+        public DateTime ModifiedDt { get; set; }
+        public bool IsActive { get; set; }
+        //public string? CreatedBy { get; set; }
+        //public DateTime CreatedDt { get; set; }
+    }
+
+    public abstract class BasicDetails
+    {
+        public string Name { get; set; } = null!;
+        public string Language { get; set; } = null!;
+    }
+
 }
